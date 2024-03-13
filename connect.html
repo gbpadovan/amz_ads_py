@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>amz_ads_py.connect API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>amz_ads_py.connect</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#python 3.11.15
+import os
+import requests
+from urllib.parse import urljoin
+from typing import Optional, Union
+#
+from .authorization import Authorization
+
+
+class Connect(Authorization):
+    &#34;&#34;&#34;Generates HEADERS and DATA payload used in requests.
+    Methods are used to get access_token &amp; refresh_token.
+    &#34;&#34;&#34;    
+    def __init__(self, region, **kwargs):
+        super().__init__(region=region, **kwargs)
+        self._URL      = None
+        self._HEADERS  = None
+        self._DATA     = None
+        self._RAW_RESP = None
+
+    @property
+    def URL(self):
+        return self._URL
+
+    @URL.setter
+    def URL(self, new_value):
+        self._URL = new_value
+        return self._URL       
+
+    @URL.deleter
+    def URL(self):
+        del self._URL
+    
+    @property
+    def HEADERS(self):
+        return self._HEADERS
+
+    @HEADERS.setter
+    def HEADERS(self, new_value):
+        self._HEADERS = new_value
+        return self._HEADERS       
+
+    @HEADERS.deleter
+    def HEADERS(self):
+        del self._HEADERS
+
+    @property
+    def DATA(self):
+        return self._DATA
+
+    @DATA.setter
+    def DATA(self, new_value):
+        self._DATA = new_value
+        return self._DATA       
+
+    @DATA.deleter
+    def DATA(self):
+        del self._DATA
+
+    @property
+    def RAW_RESP(self):
+        return self._RAW_RESP
+
+    @RAW_RESP.setter
+    def RAW_RESP(self, new_value):
+        self._RAW_RESP = new_value
+        return self._RAW_RESP     
+
+    @RAW_RESP.deleter
+    def RAW_RESP(self):
+        del self._RAW_RESP
+                
+
+    def examine_resp(self, response):
+        &#34;&#34;&#34;examines response&#34;&#34;&#34;
+        print(f&#39;Status code:{response.status_code}&#39;,&#34;\n&#34;)
+        print(f&#34;raw url: {self.URL}&#34;,&#39;\n&#39;)
+        print(f&#34;headers: {self.HEADERS}&#34;,&#39;\n&#39;)
+        print(f&#34;data content: {self.DATA}&#34;,&#39;\n&#39;)
+        print(f&#34;url full: {response.url}&#34;,&#39;\n&#39;)
+        return
+
+
+    def _update_headers(self)-&gt;dict:
+        &#34;Updates header data&#34;
+        headers_dict  = {
+            &#39;user_agent&#39;        :{&#34;User-Agent&#34;:&#34;Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0&#34;},
+            &#39;content_url&#39;       :{&#34;Content-Type&#34;:&#34;application/x-www-form-urlencoded;charset=UTF-8&#34;}, 
+            &#39;cont_rep_json_v3&#39;  :{&#34;Content-Type&#34;:&#34;application/vnd.createasyncreportrequest.v3+json&#34;},# V3
+            #&#39;content_json_v2&#39;   :{&#34;Content-Type&#34;:&#34;application/json&#34;}, # V2, maybe deprecated
+            &#39;authorize&#39;         :{&#34;Authorization&#34;:f&#34;Bearer {self.access_token}&#34;},
+            &#39;amz_ad_api_cli_id&#39; :{&#34;Amazon-Advertising-API-ClientId&#34;:f&#34;{self.CLIENT_ID}&#34;},        
+            &#39;amz_ad_api_scope&#39;  :{&#34;Amazon-Advertising-API-Scope&#34;:f&#34;{self.profile_id}&#34;},
+            &#39;accept*/*&#39;         :{&#34;Accept&#34;:&#34;*/*&#34;},
+            &#39;cache_no_cache&#39;    :{&#34;Cache-Control&#34;:&#34;no-cache&#34;},
+            &#39;connect_keep_alive&#39;:{&#34;Connection&#34;:&#34;keep-alive&#34;},
+            &#39;host_api_test&#39;     :{&#34;Host&#34;:&#34;advertising-api-test.amazon.com&#34;},            
+        }        
+        return headers_dict
+   
+    
+    def _update_payload(self)-&gt;dict:
+        &#34;Updates payload data&#34;
+        payload_dict ={
+            &#34;grant_auth_code&#34;:{&#34;grant_type&#34;:&#34;authorization_code&#34;},
+            &#34;grant_refresh&#34;:{&#34;grant_type&#34;:&#34;refresh_token&#34;},
+            &#34;code&#34;:{&#34;code&#34;:f&#34;{self.auth_code}&#34;}, # enhireted by Authorization obj, default = &#34;&#34;
+            &#34;redirect_uri&#34;:{&#34;redirect_uri&#34;:f&#34;{self.RETURN_URL}&#34;},
+            &#34;client_id&#34;:{&#34;client_id&#34;:f&#34;{self.CLIENT_ID}&#34;},
+            &#34;client_secret&#34;:{&#34;client_secret&#34;:f&#34;{self.CLIENT_SECRET}&#34;},
+            &#34;refresh_token&#34;:{&#34;refresh_token&#34;:f&#34;{self.refresh_token}&#34;},
+            &#34;scope_ads&#34;:{&#34;scope&#34;:&#34;advertising::campaign_management&#34;},
+            &#34;resp_code&#34;:{&#34;response_type&#34;:&#34;code&#34;},
+        }
+        return payload_dict
+
+
+    def _set_header_payload(
+        self, 
+        list_of_keys:list, 
+        kind:str, 
+        return_as=&#39;dict&#39;
+        )-&gt; Union[dict, list[str], str]:
+        &#34;&#34;&#34;Create a either a dictionary or a list or a string
+        containing headers or data payload to be used in a request.
+
+        Args:
+            list_of_keys (list): List with the keys containing the desired headers
+            kind (str): Any stings in [&#39;headers&#39;,&#39;payload&#39;]
+            return_as (str): Any strings in [&#39;dict&#39;,&#39;list&#39;,&#39;string&#39;]. Default = &#39;dict&#39;
+    
+        Returns: 
+            headers/payload: Union[dict, list[str], str]
+            
+        Raises:
+            AssertionError: if the input is not a list or the kind is not &#39;headers&#39; or &#39;payload&#39;
+            Exception: if the header/payload is incorrect.
+    
+        Notes:
+            This function is used to create a payload or headers to be used in a request.
+            The function takes a list of keys and a kind (headers or payload) as input.
+            The function returns a dictionary, list or string containing the headers or payload.
+            The function raises an AssertionError if the input is not a list or the kind is not &#39;headers&#39; or &#39;payload&#39;.
+            The function raises an Exception if the header/payload is incorrect.
+        &#34;&#34;&#34;        
+        try:
+            assert isinstance(list_of_keys,list)
+            assert kind in [&#39;headers&#39;,&#39;payload&#39;]
+        except:
+            raise Exception(&#34;Provide right list or right kind.&#34;)        
+    
+        if kind == &#39;headers&#39;:
+            work_dict = self._update_headers()
+            separator = &#39;:&#39;
+        if kind == &#39;payload&#39;:
+            work_dict = self._update_payload()
+            separator = &#39;=&#39;
+        
+        new_work_dict = {}
+    
+        for k in list_of_keys:
+            try:
+                assert k in work_dict.keys()
+                new_work_dict.update(work_dict[k])
+            except:
+                raise Exception(f&#34;Header/payload {k} is incorrect.&#34;)
+    
+        if return_as == &#39;dict&#39;:
+            return new_work_dict    
+        else:
+            work_as_list =[]
+            for key in list(new_work_dict.keys()):            
+                work_as_list.append(key + separator + new_work_dict[key])
+            # this is used when making request with pycurl, instead of requests
+            if return_as == &#39;list&#39;:
+                return work_as_list
+    
+            if return_as == &#39;string&#39;:
+                return &#34;&amp;&#34;.join(work_as_list)
+                
+       
+    def get_url_auth_code(self):        
+        &#34;&#34;&#34;Gets the url which one can manually login on the amazon to 
+        receive the authorization code.
+        
+        Args:
+            
+        Returns:
+            resp: request.response or resp.url:str
+
+        Read:
+            https://advertising.amazon.com/API/docs/en-us/guides/get-started/create-authorization-grant#determine-the-values-for-the-required-query-parameters
+
+        Equivalent request GET:
+        ```    
+        https://www.amazon.com/ap/oa
+            ?client_id=amzn1.application-oa2-client.12345678901234567890
+            &amp;scope=advertising::campaign_management
+            &amp;response_type=code
+            &amp;redirect_uri=https://amazon.com        
+        ```
+        * Once you obtain the url and login, you&#39;ll be redirected.
+        * Locate the code inside the url in the browser url panel.
+        * THIS CODE ONLY LASTS 5 MINUTES SO YOU&#39;LL HAVE TO GET THE ACCESS TOKEN IN THE MEAN TIME, OTHERWISE REPEAT THIS PROCESS        
+        &#34;&#34;&#34;
+        lst_headers  = [&#39;user_agent&#39;,&#39;content_url&#39;]
+        lst_payload  = [&#34;client_id&#34;,&#34;scope_ads&#34;,&#34;resp_code&#34;,&#34;redirect_uri&#34;]
+
+        self.URL     = urljoin(self.prefix_acsc,&#39;/ap/oa&#39;)    
+        self.HEADERS = self._set_header_payload(
+                                    list_of_keys=lst_headers, 
+                                    kind=&#39;headers&#39;, 
+                                    return_as=&#39;dict&#39;)    
+        
+        self.DATA    = self._set_header_payload(
+                                list_of_keys=lst_payload, 
+                                kind=&#39;payload&#39;, 
+                                return_as=&#39;string&#39;)
+        
+        self.RAW_RESP = requests.get(
+            url=self.URL,
+            headers= self.HEADERS, # must be dict
+            params= self.DATA      # must be str
+        )      
+
+        if self.RAW_RESP.status_code != 200:
+            self.examine_resp(response=self.RAW_RESP)
+            return self.RAW_RESP
+        else:
+            return self.RAW_RESP.url
+
+    
+    def fetch_access_tkn(self, method:str, return_tokens:bool=False):        
+        &#34;&#34;&#34;Retrieves access token.
+        
+        Args:
+            method (str): Either &#39;auth_code&#39; or &#39;refresh&#39;
+            return_token (bool): If True returns self.access_token, False -&gt; None
+
+        Returns:
+            self.access_tkn_dict (dict) or None
+        
+        Equivalent request POST:
+        ```     
+        curl  \
+        -X POST \
+        --data &#34;grant_type=authorization_code&amp;code=AUTH_CODE&amp;redirect_uri=YOUR_RETURN_URL&amp;client_id=YOUR_CLIENT_ID&amp;client_secret=YOUR_SECRET_KEY&#34; \
+        https://api.amazon.com/auth/o2/token
+        ``` 
+        &#34;&#34;&#34;
+        assert method in [&#39;auth_code&#39;,&#39;refresh&#39;]
+        
+        lst_headers  = [&#39;content_url&#39;]
+        self.URL = urljoin(self.prefix_auth,&#39;/auth/o2/token&#39;)
+        self.HEADERS = self._set_header_payload(
+                                    list_of_keys=lst_headers, 
+                                    kind=&#39;headers&#39;, 
+                                    return_as=&#39;dict&#39;)
+        
+        if method == &#39;auth_code&#39;:
+            lst_payload = [&#39;grant_auth_code&#39;,&#39;code&#39;,&#39;redirect_uri&#39;,
+                           &#39;client_id&#39;,&#39;client_secret&#39;]
+            
+        if method == &#39;refresh&#39;:
+            lst_payload = [&#39;grant_refresh&#39;,&#39;refresh_token&#39;,
+                           &#39;client_id&#39;,&#39;client_secret&#39;]
+            
+        # request.post uses &#39;dict&#39; as payload in &#39;data&#39; parameter         
+        self.DATA = self._set_header_payload(
+                            list_of_keys=lst_payload, 
+                            kind=&#39;payload&#39;, 
+                            return_as=&#39;dict&#39;) # must be a dict
+        
+        self.RAW_RESP = requests.post(
+            url= self.URL, 
+            headers=self.HEADERS,
+            data=self.DATA
+        )
+
+        if self.RAW_RESP.status_code != 200:
+            self.examine_resp(response=self.RAW_RESP)            
+            return self.RAW_RESP
+        else:
+            self.access_tkn_dict = self.RAW_RESP.json()
+            self.access_token = self.access_tkn_dict[&#39;access_token&#39;]
+            
+            if return_tokens:
+                return self.access_tkn_dict
+            pass
+        return</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="amz_ads_py.connect.Connect"><code class="flex name class">
+<span>class <span class="ident">Connect</span></span>
+<span>(</span><span>region, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generates HEADERS and DATA payload used in requests.
+Methods are used to get access_token &amp; refresh_token.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Connect(Authorization):
+    &#34;&#34;&#34;Generates HEADERS and DATA payload used in requests.
+    Methods are used to get access_token &amp; refresh_token.
+    &#34;&#34;&#34;    
+    def __init__(self, region, **kwargs):
+        super().__init__(region=region, **kwargs)
+        self._URL      = None
+        self._HEADERS  = None
+        self._DATA     = None
+        self._RAW_RESP = None
+
+    @property
+    def URL(self):
+        return self._URL
+
+    @URL.setter
+    def URL(self, new_value):
+        self._URL = new_value
+        return self._URL       
+
+    @URL.deleter
+    def URL(self):
+        del self._URL
+    
+    @property
+    def HEADERS(self):
+        return self._HEADERS
+
+    @HEADERS.setter
+    def HEADERS(self, new_value):
+        self._HEADERS = new_value
+        return self._HEADERS       
+
+    @HEADERS.deleter
+    def HEADERS(self):
+        del self._HEADERS
+
+    @property
+    def DATA(self):
+        return self._DATA
+
+    @DATA.setter
+    def DATA(self, new_value):
+        self._DATA = new_value
+        return self._DATA       
+
+    @DATA.deleter
+    def DATA(self):
+        del self._DATA
+
+    @property
+    def RAW_RESP(self):
+        return self._RAW_RESP
+
+    @RAW_RESP.setter
+    def RAW_RESP(self, new_value):
+        self._RAW_RESP = new_value
+        return self._RAW_RESP     
+
+    @RAW_RESP.deleter
+    def RAW_RESP(self):
+        del self._RAW_RESP
+                
+
+    def examine_resp(self, response):
+        &#34;&#34;&#34;examines response&#34;&#34;&#34;
+        print(f&#39;Status code:{response.status_code}&#39;,&#34;\n&#34;)
+        print(f&#34;raw url: {self.URL}&#34;,&#39;\n&#39;)
+        print(f&#34;headers: {self.HEADERS}&#34;,&#39;\n&#39;)
+        print(f&#34;data content: {self.DATA}&#34;,&#39;\n&#39;)
+        print(f&#34;url full: {response.url}&#34;,&#39;\n&#39;)
+        return
+
+
+    def _update_headers(self)-&gt;dict:
+        &#34;Updates header data&#34;
+        headers_dict  = {
+            &#39;user_agent&#39;        :{&#34;User-Agent&#34;:&#34;Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0&#34;},
+            &#39;content_url&#39;       :{&#34;Content-Type&#34;:&#34;application/x-www-form-urlencoded;charset=UTF-8&#34;}, 
+            &#39;cont_rep_json_v3&#39;  :{&#34;Content-Type&#34;:&#34;application/vnd.createasyncreportrequest.v3+json&#34;},# V3
+            #&#39;content_json_v2&#39;   :{&#34;Content-Type&#34;:&#34;application/json&#34;}, # V2, maybe deprecated
+            &#39;authorize&#39;         :{&#34;Authorization&#34;:f&#34;Bearer {self.access_token}&#34;},
+            &#39;amz_ad_api_cli_id&#39; :{&#34;Amazon-Advertising-API-ClientId&#34;:f&#34;{self.CLIENT_ID}&#34;},        
+            &#39;amz_ad_api_scope&#39;  :{&#34;Amazon-Advertising-API-Scope&#34;:f&#34;{self.profile_id}&#34;},
+            &#39;accept*/*&#39;         :{&#34;Accept&#34;:&#34;*/*&#34;},
+            &#39;cache_no_cache&#39;    :{&#34;Cache-Control&#34;:&#34;no-cache&#34;},
+            &#39;connect_keep_alive&#39;:{&#34;Connection&#34;:&#34;keep-alive&#34;},
+            &#39;host_api_test&#39;     :{&#34;Host&#34;:&#34;advertising-api-test.amazon.com&#34;},            
+        }        
+        return headers_dict
+   
+    
+    def _update_payload(self)-&gt;dict:
+        &#34;Updates payload data&#34;
+        payload_dict ={
+            &#34;grant_auth_code&#34;:{&#34;grant_type&#34;:&#34;authorization_code&#34;},
+            &#34;grant_refresh&#34;:{&#34;grant_type&#34;:&#34;refresh_token&#34;},
+            &#34;code&#34;:{&#34;code&#34;:f&#34;{self.auth_code}&#34;}, # enhireted by Authorization obj, default = &#34;&#34;
+            &#34;redirect_uri&#34;:{&#34;redirect_uri&#34;:f&#34;{self.RETURN_URL}&#34;},
+            &#34;client_id&#34;:{&#34;client_id&#34;:f&#34;{self.CLIENT_ID}&#34;},
+            &#34;client_secret&#34;:{&#34;client_secret&#34;:f&#34;{self.CLIENT_SECRET}&#34;},
+            &#34;refresh_token&#34;:{&#34;refresh_token&#34;:f&#34;{self.refresh_token}&#34;},
+            &#34;scope_ads&#34;:{&#34;scope&#34;:&#34;advertising::campaign_management&#34;},
+            &#34;resp_code&#34;:{&#34;response_type&#34;:&#34;code&#34;},
+        }
+        return payload_dict
+
+
+    def _set_header_payload(
+        self, 
+        list_of_keys:list, 
+        kind:str, 
+        return_as=&#39;dict&#39;
+        )-&gt; Union[dict, list[str], str]:
+        &#34;&#34;&#34;Create a either a dictionary or a list or a string
+        containing headers or data payload to be used in a request.
+
+        Args:
+            list_of_keys (list): List with the keys containing the desired headers
+            kind (str): Any stings in [&#39;headers&#39;,&#39;payload&#39;]
+            return_as (str): Any strings in [&#39;dict&#39;,&#39;list&#39;,&#39;string&#39;]. Default = &#39;dict&#39;
+    
+        Returns: 
+            headers/payload: Union[dict, list[str], str]
+            
+        Raises:
+            AssertionError: if the input is not a list or the kind is not &#39;headers&#39; or &#39;payload&#39;
+            Exception: if the header/payload is incorrect.
+    
+        Notes:
+            This function is used to create a payload or headers to be used in a request.
+            The function takes a list of keys and a kind (headers or payload) as input.
+            The function returns a dictionary, list or string containing the headers or payload.
+            The function raises an AssertionError if the input is not a list or the kind is not &#39;headers&#39; or &#39;payload&#39;.
+            The function raises an Exception if the header/payload is incorrect.
+        &#34;&#34;&#34;        
+        try:
+            assert isinstance(list_of_keys,list)
+            assert kind in [&#39;headers&#39;,&#39;payload&#39;]
+        except:
+            raise Exception(&#34;Provide right list or right kind.&#34;)        
+    
+        if kind == &#39;headers&#39;:
+            work_dict = self._update_headers()
+            separator = &#39;:&#39;
+        if kind == &#39;payload&#39;:
+            work_dict = self._update_payload()
+            separator = &#39;=&#39;
+        
+        new_work_dict = {}
+    
+        for k in list_of_keys:
+            try:
+                assert k in work_dict.keys()
+                new_work_dict.update(work_dict[k])
+            except:
+                raise Exception(f&#34;Header/payload {k} is incorrect.&#34;)
+    
+        if return_as == &#39;dict&#39;:
+            return new_work_dict    
+        else:
+            work_as_list =[]
+            for key in list(new_work_dict.keys()):            
+                work_as_list.append(key + separator + new_work_dict[key])
+            # this is used when making request with pycurl, instead of requests
+            if return_as == &#39;list&#39;:
+                return work_as_list
+    
+            if return_as == &#39;string&#39;:
+                return &#34;&amp;&#34;.join(work_as_list)
+                
+       
+    def get_url_auth_code(self):        
+        &#34;&#34;&#34;Gets the url which one can manually login on the amazon to 
+        receive the authorization code.
+        
+        Args:
+            
+        Returns:
+            resp: request.response or resp.url:str
+
+        Read:
+            https://advertising.amazon.com/API/docs/en-us/guides/get-started/create-authorization-grant#determine-the-values-for-the-required-query-parameters
+
+        Equivalent request GET:
+        ```    
+        https://www.amazon.com/ap/oa
+            ?client_id=amzn1.application-oa2-client.12345678901234567890
+            &amp;scope=advertising::campaign_management
+            &amp;response_type=code
+            &amp;redirect_uri=https://amazon.com        
+        ```
+        * Once you obtain the url and login, you&#39;ll be redirected.
+        * Locate the code inside the url in the browser url panel.
+        * THIS CODE ONLY LASTS 5 MINUTES SO YOU&#39;LL HAVE TO GET THE ACCESS TOKEN IN THE MEAN TIME, OTHERWISE REPEAT THIS PROCESS        
+        &#34;&#34;&#34;
+        lst_headers  = [&#39;user_agent&#39;,&#39;content_url&#39;]
+        lst_payload  = [&#34;client_id&#34;,&#34;scope_ads&#34;,&#34;resp_code&#34;,&#34;redirect_uri&#34;]
+
+        self.URL     = urljoin(self.prefix_acsc,&#39;/ap/oa&#39;)    
+        self.HEADERS = self._set_header_payload(
+                                    list_of_keys=lst_headers, 
+                                    kind=&#39;headers&#39;, 
+                                    return_as=&#39;dict&#39;)    
+        
+        self.DATA    = self._set_header_payload(
+                                list_of_keys=lst_payload, 
+                                kind=&#39;payload&#39;, 
+                                return_as=&#39;string&#39;)
+        
+        self.RAW_RESP = requests.get(
+            url=self.URL,
+            headers= self.HEADERS, # must be dict
+            params= self.DATA      # must be str
+        )      
+
+        if self.RAW_RESP.status_code != 200:
+            self.examine_resp(response=self.RAW_RESP)
+            return self.RAW_RESP
+        else:
+            return self.RAW_RESP.url
+
+    
+    def fetch_access_tkn(self, method:str, return_tokens:bool=False):        
+        &#34;&#34;&#34;Retrieves access token.
+        
+        Args:
+            method (str): Either &#39;auth_code&#39; or &#39;refresh&#39;
+            return_token (bool): If True returns self.access_token, False -&gt; None
+
+        Returns:
+            self.access_tkn_dict (dict) or None
+        
+        Equivalent request POST:
+        ```     
+        curl  \
+        -X POST \
+        --data &#34;grant_type=authorization_code&amp;code=AUTH_CODE&amp;redirect_uri=YOUR_RETURN_URL&amp;client_id=YOUR_CLIENT_ID&amp;client_secret=YOUR_SECRET_KEY&#34; \
+        https://api.amazon.com/auth/o2/token
+        ``` 
+        &#34;&#34;&#34;
+        assert method in [&#39;auth_code&#39;,&#39;refresh&#39;]
+        
+        lst_headers  = [&#39;content_url&#39;]
+        self.URL = urljoin(self.prefix_auth,&#39;/auth/o2/token&#39;)
+        self.HEADERS = self._set_header_payload(
+                                    list_of_keys=lst_headers, 
+                                    kind=&#39;headers&#39;, 
+                                    return_as=&#39;dict&#39;)
+        
+        if method == &#39;auth_code&#39;:
+            lst_payload = [&#39;grant_auth_code&#39;,&#39;code&#39;,&#39;redirect_uri&#39;,
+                           &#39;client_id&#39;,&#39;client_secret&#39;]
+            
+        if method == &#39;refresh&#39;:
+            lst_payload = [&#39;grant_refresh&#39;,&#39;refresh_token&#39;,
+                           &#39;client_id&#39;,&#39;client_secret&#39;]
+            
+        # request.post uses &#39;dict&#39; as payload in &#39;data&#39; parameter         
+        self.DATA = self._set_header_payload(
+                            list_of_keys=lst_payload, 
+                            kind=&#39;payload&#39;, 
+                            return_as=&#39;dict&#39;) # must be a dict
+        
+        self.RAW_RESP = requests.post(
+            url= self.URL, 
+            headers=self.HEADERS,
+            data=self.DATA
+        )
+
+        if self.RAW_RESP.status_code != 200:
+            self.examine_resp(response=self.RAW_RESP)            
+            return self.RAW_RESP
+        else:
+            self.access_tkn_dict = self.RAW_RESP.json()
+            self.access_token = self.access_tkn_dict[&#39;access_token&#39;]
+            
+            if return_tokens:
+                return self.access_tkn_dict
+            pass
+        return</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="amz_ads_py.authorization.Authorization" href="authorization.html#amz_ads_py.authorization.Authorization">Authorization</a></li>
+<li><a title="amz_ads_py.root.Root" href="root.html#amz_ads_py.root.Root">Root</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="amz_ads_py.reports.Reports" href="reports.html#amz_ads_py.reports.Reports">Reports</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="amz_ads_py.connect.Connect.DATA"><code class="name">var <span class="ident">DATA</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def DATA(self):
+    return self._DATA</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.connect.Connect.HEADERS"><code class="name">var <span class="ident">HEADERS</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def HEADERS(self):
+    return self._HEADERS</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.connect.Connect.RAW_RESP"><code class="name">var <span class="ident">RAW_RESP</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def RAW_RESP(self):
+    return self._RAW_RESP</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.connect.Connect.URL"><code class="name">var <span class="ident">URL</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def URL(self):
+    return self._URL</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="amz_ads_py.connect.Connect.examine_resp"><code class="name flex">
+<span>def <span class="ident">examine_resp</span></span>(<span>self, response)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>examines response</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def examine_resp(self, response):
+    &#34;&#34;&#34;examines response&#34;&#34;&#34;
+    print(f&#39;Status code:{response.status_code}&#39;,&#34;\n&#34;)
+    print(f&#34;raw url: {self.URL}&#34;,&#39;\n&#39;)
+    print(f&#34;headers: {self.HEADERS}&#34;,&#39;\n&#39;)
+    print(f&#34;data content: {self.DATA}&#34;,&#39;\n&#39;)
+    print(f&#34;url full: {response.url}&#34;,&#39;\n&#39;)
+    return</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.connect.Connect.fetch_access_tkn"><code class="name flex">
+<span>def <span class="ident">fetch_access_tkn</span></span>(<span>self, method: str, return_tokens: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retrieves access token.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>method</code></strong> :&ensp;<code>str</code></dt>
+<dd>Either 'auth_code' or 'refresh'</dd>
+<dt><strong><code>return_token</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If True returns self.access_token, False -&gt; None</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>self.access_tkn_dict (dict)</code> or <code>None</code></dt>
+<dd>&nbsp;</dd>
+<dt><code>Equivalent request POST:</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<pre><code>`curl          -X POST         --data &quot;grant_type=authorization_code&amp;code=AUTH_CODE&amp;redirect_uri=YOUR_RETURN_URL&amp;client_id=YOUR_CLIENT_ID&amp;client_secret=YOUR_SECRET_KEY&quot;         https://api.amazon.com/auth/o2/token`
+:   &amp;nbsp;
+
+
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fetch_access_tkn(self, method:str, return_tokens:bool=False):        
+    &#34;&#34;&#34;Retrieves access token.
+    
+    Args:
+        method (str): Either &#39;auth_code&#39; or &#39;refresh&#39;
+        return_token (bool): If True returns self.access_token, False -&gt; None
+
+    Returns:
+        self.access_tkn_dict (dict) or None
+    
+    Equivalent request POST:
+    ```     
+    curl  \
+    -X POST \
+    --data &#34;grant_type=authorization_code&amp;code=AUTH_CODE&amp;redirect_uri=YOUR_RETURN_URL&amp;client_id=YOUR_CLIENT_ID&amp;client_secret=YOUR_SECRET_KEY&#34; \
+    https://api.amazon.com/auth/o2/token
+    ``` 
+    &#34;&#34;&#34;
+    assert method in [&#39;auth_code&#39;,&#39;refresh&#39;]
+    
+    lst_headers  = [&#39;content_url&#39;]
+    self.URL = urljoin(self.prefix_auth,&#39;/auth/o2/token&#39;)
+    self.HEADERS = self._set_header_payload(
+                                list_of_keys=lst_headers, 
+                                kind=&#39;headers&#39;, 
+                                return_as=&#39;dict&#39;)
+    
+    if method == &#39;auth_code&#39;:
+        lst_payload = [&#39;grant_auth_code&#39;,&#39;code&#39;,&#39;redirect_uri&#39;,
+                       &#39;client_id&#39;,&#39;client_secret&#39;]
+        
+    if method == &#39;refresh&#39;:
+        lst_payload = [&#39;grant_refresh&#39;,&#39;refresh_token&#39;,
+                       &#39;client_id&#39;,&#39;client_secret&#39;]
+        
+    # request.post uses &#39;dict&#39; as payload in &#39;data&#39; parameter         
+    self.DATA = self._set_header_payload(
+                        list_of_keys=lst_payload, 
+                        kind=&#39;payload&#39;, 
+                        return_as=&#39;dict&#39;) # must be a dict
+    
+    self.RAW_RESP = requests.post(
+        url= self.URL, 
+        headers=self.HEADERS,
+        data=self.DATA
+    )
+
+    if self.RAW_RESP.status_code != 200:
+        self.examine_resp(response=self.RAW_RESP)            
+        return self.RAW_RESP
+    else:
+        self.access_tkn_dict = self.RAW_RESP.json()
+        self.access_token = self.access_tkn_dict[&#39;access_token&#39;]
+        
+        if return_tokens:
+            return self.access_tkn_dict
+        pass
+    return</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.connect.Connect.get_url_auth_code"><code class="name flex">
+<span>def <span class="ident">get_url_auth_code</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the url which one can manually login on the amazon to
+receive the authorization code.</p>
+<h2 id="args">Args</h2>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>resp</code></dt>
+<dd>request.response or resp.url:str</dd>
+</dl>
+<h2 id="read">Read</h2>
+<p><a href="https://advertising.amazon.com/API/docs/en-us/guides/get-started/create-authorization-grant#determine-the-values-for-the-required-query-parameters">https://advertising.amazon.com/API/docs/en-us/guides/get-started/create-authorization-grant#determine-the-values-for-the-required-query-parameters</a></p>
+<p>Equivalent request GET:</p>
+<pre><code>https://www.amazon.com/ap/oa
+    ?client_id=amzn1.application-oa2-client.12345678901234567890
+    &amp;scope=advertising::campaign_management
+    &amp;response_type=code
+    &amp;redirect_uri=https://amazon.com        
+</code></pre>
+<ul>
+<li>Once you obtain the url and login, you'll be redirected.</li>
+<li>Locate the code inside the url in the browser url panel.</li>
+<li>THIS CODE ONLY LASTS 5 MINUTES SO YOU'LL HAVE TO GET THE ACCESS TOKEN IN THE MEAN TIME, OTHERWISE REPEAT THIS PROCESS</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_url_auth_code(self):        
+    &#34;&#34;&#34;Gets the url which one can manually login on the amazon to 
+    receive the authorization code.
+    
+    Args:
+        
+    Returns:
+        resp: request.response or resp.url:str
+
+    Read:
+        https://advertising.amazon.com/API/docs/en-us/guides/get-started/create-authorization-grant#determine-the-values-for-the-required-query-parameters
+
+    Equivalent request GET:
+    ```    
+    https://www.amazon.com/ap/oa
+        ?client_id=amzn1.application-oa2-client.12345678901234567890
+        &amp;scope=advertising::campaign_management
+        &amp;response_type=code
+        &amp;redirect_uri=https://amazon.com        
+    ```
+    * Once you obtain the url and login, you&#39;ll be redirected.
+    * Locate the code inside the url in the browser url panel.
+    * THIS CODE ONLY LASTS 5 MINUTES SO YOU&#39;LL HAVE TO GET THE ACCESS TOKEN IN THE MEAN TIME, OTHERWISE REPEAT THIS PROCESS        
+    &#34;&#34;&#34;
+    lst_headers  = [&#39;user_agent&#39;,&#39;content_url&#39;]
+    lst_payload  = [&#34;client_id&#34;,&#34;scope_ads&#34;,&#34;resp_code&#34;,&#34;redirect_uri&#34;]
+
+    self.URL     = urljoin(self.prefix_acsc,&#39;/ap/oa&#39;)    
+    self.HEADERS = self._set_header_payload(
+                                list_of_keys=lst_headers, 
+                                kind=&#39;headers&#39;, 
+                                return_as=&#39;dict&#39;)    
+    
+    self.DATA    = self._set_header_payload(
+                            list_of_keys=lst_payload, 
+                            kind=&#39;payload&#39;, 
+                            return_as=&#39;string&#39;)
+    
+    self.RAW_RESP = requests.get(
+        url=self.URL,
+        headers= self.HEADERS, # must be dict
+        params= self.DATA      # must be str
+    )      
+
+    if self.RAW_RESP.status_code != 200:
+        self.examine_resp(response=self.RAW_RESP)
+        return self.RAW_RESP
+    else:
+        return self.RAW_RESP.url</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="amz_ads_py" href="index.html">amz_ads_py</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="amz_ads_py.connect.Connect" href="#amz_ads_py.connect.Connect">Connect</a></code></h4>
+<ul class="two-column">
+<li><code><a title="amz_ads_py.connect.Connect.DATA" href="#amz_ads_py.connect.Connect.DATA">DATA</a></code></li>
+<li><code><a title="amz_ads_py.connect.Connect.HEADERS" href="#amz_ads_py.connect.Connect.HEADERS">HEADERS</a></code></li>
+<li><code><a title="amz_ads_py.connect.Connect.RAW_RESP" href="#amz_ads_py.connect.Connect.RAW_RESP">RAW_RESP</a></code></li>
+<li><code><a title="amz_ads_py.connect.Connect.URL" href="#amz_ads_py.connect.Connect.URL">URL</a></code></li>
+<li><code><a title="amz_ads_py.connect.Connect.examine_resp" href="#amz_ads_py.connect.Connect.examine_resp">examine_resp</a></code></li>
+<li><code><a title="amz_ads_py.connect.Connect.fetch_access_tkn" href="#amz_ads_py.connect.Connect.fetch_access_tkn">fetch_access_tkn</a></code></li>
+<li><code><a title="amz_ads_py.connect.Connect.get_url_auth_code" href="#amz_ads_py.connect.Connect.get_url_auth_code">get_url_auth_code</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

@@ -1,0 +1,2341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>amz_ads_py.reports API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>amz_ads_py.reports</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#python 3.11.15
+import os
+# used in class Metadata
+import pandas as pd
+from datetime import datetime, UTC
+#used in class ReportsAsync
+import json
+import aiohttp
+import asyncio
+import shutil
+import time
+from typing import Optional, Union
+from urllib.parse import urljoin
+from tqdm import tqdm
+#
+from .root import Root
+from .connect import Connect
+from .utils import (
+        is_valid_month_string, 
+        verify_and_create_directory, 
+        get_first_and_last_days_of_month
+)
+from .metrics import (
+        CAMPAING_METRICS, 
+        CAMP_GROUP_CAMP,
+        CAMP_GROUP_ADG,
+        TARGETING_METRICS, 
+        METRICS
+)
+
+
+#used in metadata
+data_columns = [
+    &#39;created_at&#39;,
+    &#39;region&#39;,
+    &#39;report_type&#39;,
+    &#39;start_date&#39;,
+    &#39;time_unit&#39;,
+    &#39;report_id&#39;,
+    &#39;expires_at&#39;,
+    &#39;estim_exp_time&#39;,
+    &#39;url&#39;,
+    &#39;downloaded&#39;,
+    &#39;discarded&#39;,
+    &#39;error&#39;,
+    &#39;error_url&#39;,
+    &#39;error_header&#39;,    
+    &#39;error_data&#39;,
+]
+
+
+class Debug(Root):
+    &#34;&#34;&#34;This class stores objects from various requests,
+    to investigate if the requests are going well&#34;&#34;&#34;
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._resp_step1 = None
+        self._resp_step2 = None      
+
+    @property
+    def resp_step1(self):
+        return self._resp_step1
+
+    @resp_step1.setter
+    def resp_step1(self, new_value):
+        self._resp_step1  = new_value
+        return self._resp_step1
+
+    @resp_step1.deleter
+    def resp_step1(self):
+        del self._resp_step1
+    
+    @property
+    def resp_step2(self):
+        return self._resp_step2
+
+    @resp_step2.setter
+    def resp_step2(self, new_value):
+        self._resp_step2 = new_value
+        return self._resp_step2
+
+    @resp_step2.deleter
+    def resp_step2(self):
+        del self.self._resp_step2
+
+
+###################################################################################
+
+
+class Metadata(Root):
+    &#34;&#34;&#34;Creates metadata info about reports as DataFrame stored in metadata/.
+    NOTE: The DataFrame generated may file contain sensitive data such as access_token, 
+    client_id, client_secret and other information.
+    &#34;&#34;&#34;
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)        
+        self.meta_path = os.path.join(os.getcwd(),&#39;metadata&#39;)
+        verify_and_create_directory(self.meta_path)
+
+        if not [f for f in os.listdir(self.meta_path) if f.endswith(&#39;.pkl&#39;)]:
+            self.report_df = pd.DataFrame([],dtype=float, columns=data_columns)
+        else:
+            self.read_report_df()
+
+
+    def read_report_df(self):
+        &#34;&#34;&#34;reads the last pkl file in the metadata directory&#34;&#34;&#34;        
+        last_file = [f for f in os.listdir(self.meta_path) if f.endswith(&#39;.pkl&#39;)][-1]
+        self.report_df = pd.read_pickle(os.path.join(self.meta_path,last_file))
+        return
+
+
+    def save_report_df(self):
+        &#34;&#34;&#34;saves at /metadata/&#34;&#34;&#34;
+        filename = f&#34;{datetime.now(UTC).strftime(&#34;%Y-%m-%d&#34;)}.pkl&#34;        
+        self.report_df.to_pickle(os.path.join(self.meta_path,filename))
+        return
+
+    
+    def gen_report_metadata_df(self, json:dict):
+        &#34;&#34;&#34;Creates a dataframe with metadata from requests on reports.
+        Useful if in step2 the functions run out of retries, the 
+        report_id can still work and retry the function later.        
+        &#34;&#34;&#34;
+        data = pd.DataFrame({},dtype=float, columns=data_columns)
+        data[&#39;created_at&#39;] = [json.get(&#39;createdAt&#39;)]
+        data[&#39;region&#39;] = [self.region]
+        data[&#39;report_type&#39;] = [json.get(&#39;configuration&#39;).get(&#39;reportTypeId&#39;)]
+        data[&#39;start_date&#39;] = [json.get(&#39;startDate&#39;)]
+        data[&#39;time_unit&#39;] = [json.get(&#39;configuration&#39;).get(&#39;timeUnit&#39;)]
+        data[&#39;report_id&#39;] = [json.get(&#39;reportId&#39;)]
+        data[&#39;expires_at&#39;] = [None]
+        data[&#39;estim_exp_time&#39;] = [pd.Timestamp(json.get(&#39;createdAt&#39;),tz=&#39;UTC&#39;)+ pd.Timedelta(minutes=100)]
+        data[&#39;url&#39;] = [None]
+        data[&#39;downloaded&#39;] = [0]
+        data[&#39;discarded&#39;] = [0]
+        data[&#39;error&#39;] = [None]
+        data[&#39;error_url&#39;] = [None]
+        data[&#39;error_header&#39;] = [None]
+        data[&#39;error_data&#39;] = [None]
+
+        if not self.report_df.empty:
+            self.report_df = pd.concat([self.report_df,data])
+        else:
+            self.report_df = data.copy()
+        self.report_df.reset_index(drop=True,inplace=True)
+        #return self.report_df
+        return
+
+
+    def update_report_metadata_df(
+        self, 
+        json:Optional[dict]=None, 
+        url:Optional[str]=None, 
+        error_url=None,
+        error_header=None,
+        error_data=None
+        ):
+        &#34;&#34;&#34;Updates dataframe with metadata from requests on reports.              
+        &#34;&#34;&#34;
+        if json:
+            _id = json.get(&#39;reportId&#39;)
+
+            if error_url and error_header and error_data:
+                self.report_df.loc[self.report_df.report_id==_id,&#39;error&#39;] = json
+                self.report_df.loc[self.report_df.report_id==_id,&#39;error_url&#39;] = error_url
+                self.report_df.loc[self.report_df.report_id==_id,&#39;error_header&#39;] = error_header
+                self.report_df.loc[self.report_df.report_id==_id,&#39;error_data&#39;] = error_data
+            else:
+                self.report_df.loc[self.report_df.report_id==_id,&#39;url&#39;] = json.get(&#39;url&#39;)
+                self.report_df.loc[self.report_df.report_id==_id,&#39;expires_at&#39;] = json.get(&#39;urlExpiresAt&#39;)
+                
+        if url:
+            self.report_df.loc[self.report_df.url==url,&#39;downloaded&#39;] = 1
+        return
+
+
+###################################################################################
+
+
+class Reports(Connect, Debug, Metadata):
+    &#34;&#34;&#34;Generates data &amp; routines to create/wait/download reports 
+    using Amazon REST API &amp; custom code&#34;&#34;&#34;
+    def __init__(self, region,**kwargs):
+        super().__init__(region=region, **kwargs)
+        
+
+    def create_msg(
+        self, 
+        region:str, 
+        report_type_id:str, 
+        date:str,
+        time_unit:str,
+        group_by:str
+        ) -&gt; str:
+        &#34;&#34;&#34;Generates a, informative message to be displayed while requesting
+        the reports.
+        
+        Args:
+            region (str): Region which the report represents
+            report_type_id (str): Unique identifier for report type
+            date (str): Date for the report in &#39;YYYY-MM-DD&#39; format            
+            time_unit (str): Time unit for the report            
+            group_by (str): Group results by a specific attribute
+            
+        Returns:
+            m (str): informative message        
+        &#34;&#34;&#34;
+        m = f&#34;Region: {region} | Report Type: {report_type_id} | Date: {date} | &#34;+\
+            f&#34;TimeUnit: {time_unit} | Group by: {group_by}&#34;        
+        return m
+      
+
+    def create_filter(self, field:str, values:list) -&gt; dict:
+        &#34;&#34;&#34;The filter will be the key filter
+    
+        Parameters:
+            field (str): The field to filter on
+            values (list): The values to filter with
+        
+        Returns:
+            dict: The filter dictionary
+        &#34;&#34;&#34;
+        filter_dict = {
+            &#34;filters&#34;: [
+                {
+                    &#34;field&#34;:field,
+                    &#34;values&#34;:values,
+                }
+            ],        
+        }
+        return filter_dict
+
+
+    def create_report_body(
+        self,
+        report_type_id:str,
+        start_date:str,               
+        end_date:str,
+        time_unit:str,
+        metrics:list,        
+        group_by:Union[str, list],
+        filter_field:Optional[dict]= None
+        ) -&gt; str:
+        &#34;&#34;&#34;Creates the data to post in the report api.
+
+        Parameters:
+            start_date (str): fmt %Y-%m-%d
+            end_date (str): fmt %Y-%m-%d
+            group_by (str or list): representing the groupby
+            metrics (list): list with the advertising metrics for this report
+            report_type_id (str): unique report id fmt %Y-%m-%d
+            time_unit (str): fmt %Y-%m-%d
+            filter_field (dict or None):
+
+        Returns:
+            raw_data (str): representing a json
+        ========================================================================
+        NOTE:
+            timeUnit and supported columns
+            timeUnit can be set to DAILY or SUMMARY. If you set timeUnit to DAILY, 
+            you should include date in your column list. If you set timeUnit to 
+            SUMMARY you can include startDate and endDate in your column list.        
+        &#34;&#34;&#34;
+        try:
+            assert time_unit in [&#34;DAILY&#34;,&#34;SUMMARY&#34;]
+        except:
+            raise ValueError(f&#34;The timeUnit: {time_unit} does not correspond to &#39;DAILY&#39; or &#39;SUMMARY&#39;. Verify if there are any typos or different values.&#34; )
+            
+        if time_unit == &#34;DAILY&#34;:            
+            metrics   = metrics.copy() + [&#39;date&#39;]            
+        
+        if time_unit == &#34;SUMMARY&#34;:            
+            metrics   = metrics.copy() + [&#39;startDate&#39;,&#39;endDate&#39;]            
+        
+        if isinstance(group_by,str):
+            group_by = [group_by]
+    
+        grp_by = {&#34;groupBy&#34;: [f&#34;{group}&#34; for group in group_by]}        
+        
+        raw_data = {
+            &#34;name&#34;:f&#34;SP {report_type_id} report {start_date}_{end_date}&#34;,
+            &#34;startDate&#34;:f&#34;{start_date}&#34;,
+            &#34;endDate&#34;:f&#34;{end_date}&#34;,
+            &#34;configuration&#34;: {
+                &#34;adProduct&#34;: &#34;SPONSORED_PRODUCTS&#34;,
+                #&#34;groupBy&#34;: [
+                #    f&#34;{group_by}&#34; 
+                #],
+                &#34;columns&#34;: metrics,
+                &#34;reportTypeId&#34;: f&#34;{report_type_id}&#34;,
+                &#34;timeUnit&#34;: f&#34;{time_unit}&#34;,
+                &#34;format&#34;: &#34;GZIP_JSON&#34; # CONSTANT
+            }
+        }
+        
+        raw_data[&#39;configuration&#39;].update(grp_by)
+        
+        if isinstance(filter_field, dict):
+            raw_data[&#39;configuration&#39;].update(filter_field)
+        
+        return json.dumps(raw_data)
+    
+        
+    async def generate_report(self, data_payload:str, info_msg:str=&#34;&#34;)-&gt; Optional[str]:  
+        &#34;&#34;&#34;STEP 1- Generates repost document in the Amazon Cloud
+
+        Args:
+            data_payload (str): json like string serving as payload in a request
+            info_msg (str): message containing information about the reports, 
+                such as region, date, report type, etc.
+            
+        Returns:
+            report_id (str): The report_id
+
+        Note:        
+            Equivalent cURL example:
+        ```
+        curl --location --request POST &#39;https://advertising-api.amazon.com/reporting/reports&#39; \
+            --header &#39;Content-Type: application/vnd.createasyncreportrequest.v3+json&#39; \
+            --header &#39;Amazon-Advertising-API-ClientId: amzn1.application-oa2-client.xxxxxxxxxx&#39; \
+            --header &#39;Amazon-Advertising-API-Scope: xxxxxxxxxx&#39; \
+            --header &#39;Authorization: Bearer Atza|xxxxxx&#39; \
+            --data-raw &#39;{
+                &#34;name&#34;:&#34;SP campaigns report 7/5-7/10&#34;,
+                &#34;startDate&#34;:&#34;2022-07-05&#34;,
+                &#34;endDate&#34;:&#34;2022-07-10&#34;,
+                &#34;configuration&#34;:{
+                    &#34;adProduct&#34;:&#34;SPONSORED_PRODUCTS&#34;,
+                    &#34;groupBy&#34;:[&#34;campaign&#34;,&#34;adGroup&#34;],
+                    &#34;columns&#34;:[&#34;campaignId&#34;,&#34;adGroupId&#34;,&#34;impressions&#34;,&#34;clicks&#34;,&#34;cost&#34;,&#34;purchases1d&#34;,&#34;purchases7d&#34;,&#34;purchases14d&#34;,&#34;purchases30d&#34;,&#34;startDate&#34;,&#34;endDate&#34;],
+                    &#34;reportTypeId&#34;:&#34;spCampaigns&#34;,
+                    &#34;timeUnit&#34;:&#34;SUMMARY&#34;,
+                    &#34;format&#34;:&#34;GZIP_JSON&#34;
+                }
+            }&#39;       
+        ```
+        &#34;&#34;&#34;        
+        lst_headers  = [&#39;amz_ad_api_cli_id&#39;,&#39;authorize&#39;,
+                        &#39;amz_ad_api_scope&#39;,&#39;cont_rep_json_v3&#39;]
+        self.URL = urljoin(self.prefix_advt, &#39;/reporting/reports&#39;)
+        self.HEADERS = self._set_header_payload(
+                                    list_of_keys=lst_headers, 
+                                    kind=&#39;headers&#39;, 
+                                    return_as=&#39;dict&#39;)
+               
+        self.DATA = data_payload
+        
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self.URL, headers=self.HEADERS, data=self.DATA) as response:
+                
+                self.resp_step1 = await response.json() # Debug.method
+                
+                if response.status == 200:                    
+                    report_id = (await response.json()).get(&#39;reportId&#39;)
+                    ###### Metadata.methods ############################                     
+                    self.update_report_metadata_df(json=self.resp_step1)                      
+                    self.save_report_df()
+                    ####################################################  
+                    print(f&#34;Step 1 concluded.{info_msg}&#34;)
+                    return report_id
+                else:
+                    ##### Metadata.methods ##################
+                    self.update_report_metadata_df(
+                        json=self.resp_step1,
+                        error_url=self.URL,
+                        error_header=self.HEADERS,
+                        error_data=self.DATA,          
+                    )
+                    self.save_report_df()                    
+                    #########################################
+                    error_msg = f&#34;Expected response.status == 200.\nResponse:{self.resp_step1}&#34;
+                    error_msg2= f&#34;\nurl:{self.URL}\nheaders:{self.HEADERS}\ndata:{self.DATA}&#34;
+                    raise RuntimeError(error_msg+error_msg2)
+            
+
+    async def check_report_status(
+        self, 
+        report_id: str, 
+        retries: int = 25, 
+        backoff_factor: float = 1,
+        limit_wait: int = 32,
+        info_msg: str=&#34;&#34;
+        ) -&gt; Optional[str]:
+        &#34;&#34;&#34;
+        STEP 2- Check the status of a report and retrieve its download URL if it&#39;s completed.
+    
+        Args:
+            report_id (str): The ID of the report to check.
+            retries (int): The number of retries to attempt before giving up.
+            backoff_factor (float): The factor to use for exponential backoff between retries.
+            limit_wait (int): max number of sec. tolerated to asyncio.wait inside the function
+            info_msg (str): message containing information about the reports, such as region, 
+            date, report type, etc.
+    
+        Returns:
+            download_url (str): The download URL for the completed report
+        &#34;&#34;&#34;
+        lst_headers = [&#39;amz_ad_api_cli_id&#39;, &#39;authorize&#39;, 
+                       &#39;amz_ad_api_scope&#39;, &#39;cont_rep_json_v3&#39;]
+        self.URL = urljoin(self.prefix_advt, f&#39;/reporting/reports/{report_id}&#39;)
+        self.HEADERS = self._set_header_payload(
+                                    list_of_keys=lst_headers, 
+                                    kind=&#39;headers&#39;, 
+                                    return_as=&#39;dict&#39;)
+
+
+        async with aiohttp.ClientSession() as session:
+            
+            for attempt in range(1, retries + 1):
+                
+                async with session.get(self.URL, headers=self.HEADERS) as response:
+                    self.resp_step2 = await response.json() # Debug.method
+                    
+                    if response.status == 200:
+                        report_status = (await response.json()).get(&#39;status&#39;)
+                        if report_status == &#39;COMPLETED&#39;:
+                            download_url = (await response.json()).get(&#39;url&#39;)
+                            ###### Metadata.methods ############################                     
+                            self.update_report_metadata_df(json=self.resp_step2)                      
+                            self.save_report_df()
+                            ####################################################                      
+                            print(f&#34;Step 2 concluded.{info_msg}&#34;)
+                            return download_url
+                    else:
+                        ##### Metadata.methods ##################
+                        self.update_report_metadata_df(
+                            json=self.resp_step2,
+                            error_url=self.URL,
+                            error_header=self.HEADERS,
+                            error_data=self.DATA,          
+                        )
+                        self.save_report_df()
+                        #########################################
+                        error_msg = f&#34;Expected response.status == 200.\nResponse:{self.resp_step2}&#34;
+                        raise RuntimeError(error_msg)
+    
+                # Backoff logic
+                backoff_time = min(backoff_factor * (2 ** attempt), limit_wait)
+                screen_msg = f&#34;Attempt#:{attempt}.Waiting {backoff_time}s.{info_msg}&#34;
+                for _ in tqdm(range(backoff_time), desc=screen_msg):
+                    await asyncio.sleep(1)
+
+            raise Exception(f&#34;Request failed after {retries} retries.{info_msg}&#34;)
+
+    
+    async def download_compressed_file(
+        self, 
+        url:str, 
+        path:Union[str, os.PathLike], 
+        info_msg:str=&#34;&#34;
+        ) -&gt; None:
+        &#34;&#34;&#34;STEP 3 - Downloads file as gzip.
+
+        Args:
+            url (str): string representing the url
+            path (str): string representing the file path to be saved
+            info_msg (str): message containing information about the reports, such as region, 
+                date, report type, etc.
+    
+        Returns:
+            None
+        &#34;&#34;&#34;
+        async with aiohttp.ClientSession() as session:
+            
+            async with session.get(url) as response:
+                local_filename = path + &#34;.gz&#34;
+                with open(local_filename, &#39;wb&#39;) as f:
+                    while True:
+                        chunk = await response.content.read(1024)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+        #updated metadata
+        self.update_report_metadata_df(url=url)        
+        self.save_report_df()
+        print(f&#34;Step 3 concluded.{info_msg} Downloaded {local_filename}&#34;)
+        return    
+
+
+    async def fetch_report(
+        self,
+        report_type_id:str,
+        date:str,
+        time_unit:str,
+        group_by:Union[str, list],
+        metrics:list,
+        filter_field:Optional[dict],
+        month:Optional[str]
+        )-&gt; None:
+        &#34;&#34;&#34;Retrieves one report by following all the necessary steps:
+            STEP 1 - POST report
+            STEP 2 - GET report status &amp; url
+            STEP 3 - GET download report
+        
+        Args:
+            report_type_id (str): Unique identifier for report type
+            date (str): Date for the report in &#39;YYYY-MM-DD&#39; format            
+            time_unit (str): Time unit for the report            
+            group_by (str): Group results by a specific attribute
+            metrics:list,
+            filter_field
+            month Optional[str]: Month to retrieve if monthly periodicity is selected, in &#39;YYYY-MM&#39; format
+
+        Returns:
+            None
+        &#34;&#34;&#34;
+        if month:
+            start_date, end_date = get_first_and_last_days_of_month(month)  #from utils.py
+            peridiocity = &#34;monthly&#34;
+        else:
+            start_date, end_date = date, date # it will be the same day
+            peridiocity = &#34;daily&#34;
+        
+        body = self.create_report_body(
+                        start_date=start_date,
+                        end_date=end_date,          
+                        group_by=group_by,
+                        metrics=metrics,
+                        report_type_id=report_type_id,
+                        time_unit=time_unit,
+                        filter_field=filter_field)
+        
+        self.fetch_access_tkn(method=&#39;refresh&#39;)
+
+        msg = self.create_msg(self.region, report_type_id, date, time_unit, group_by)     
+        
+        #### STEP 1 - GENERATING REPORT
+        report_id = await self.generate_report(data_payload=body,info_msg=msg)
+
+        #### STEP 2 - CHECKING REPORT STATUS
+        download_url = await self.check_report_status(report_id=report_id,info_msg=msg)
+
+        #### STEP 3 - DOWNLOADING REPORT FILE
+        # group_by can be a str, list
+        if isinstance(group_by, list):
+            group_by = &#34;_&#34;.join(group_by)        
+        
+        folder_path = os.path.join(
+                        os.getcwd(),
+                        &#39;reports&#39;,
+                        f&#39;{self.region}&#39;,
+                        f&#39;{report_type_id}&#39;,
+                        f&#39;{peridiocity}&#39;,
+                        f&#39;{time_unit}&#39;,
+                        f&#39;{group_by}&#39;,
+                        )
+        verify_and_create_directory(directory_path=folder_path)
+        #
+        file_name = f&#34;{start_date}_{end_date}_{report_type_id}&#34; 
+        full_path = os.path.join(folder_path,file_name)            
+        await self.download_compressed_file(url=download_url, path=full_path,info_msg=msg)
+        return
+
+    
+    async def retrieve_reports_async(
+        self,
+        report_type_id:str,
+        start_date:str, 
+        end_date:str,
+        time_unit:str,
+        month:Optional[str],
+        group_by:str
+        )-&gt;None:
+        &#34;&#34;&#34;
+        Retrieves reports according to date range or monthly periodicity.
+        
+        Args:
+            report_type_id (str): Unique identifier for report type
+            start_date (str): Start date for the report in &#39;YYYY-MM-DD&#39; format
+            end_date (str): End date for the report in &#39;YYYY-MM-DD&#39; format
+            time_unit (str): Time unit for the report
+            month Optional[str]: Month to retrieve if monthly periodicity is selected, in &#39;YYYY-MM&#39; format
+            group_by (str): Group results by a specific attribute
+
+        Returns:
+            None        
+        &#34;&#34;&#34;        
+        # TODO: change this function to work with other reports
+        # Avaiable report_types:
+        # report_types = [&#39;spCampaigns&#39;,&#39;spTargeting&#39;]
+        try:
+            assert report_type_id in [&#39;spCampaigns&#39;,&#39;spTargeting&#39;]
+        except:
+            raise ValueError(f&#34;The report_type_id: {report_type_id} does not correspond to &#39;spCampaigns&#39; or &#39;spTargeting&#39;. Verify if there are any typos or different values.&#34; )
+        
+        
+        if report_type_id == &#39;spCampaigns&#39;:          
+            metrics = CAMPAING_METRICS.copy() + METRICS.copy()            
+            
+            if group_by == &#39;default&#39;:
+                group_by = [&#34;campaign&#34;,&#34;adGroup&#34;]
+                dict_filter = None               
+                metrics = metrics.copy()+CAMP_GROUP_CAMP.copy()+CAMP_GROUP_ADG.copy()
+                # it has to remove this, otherwise we have reponse error
+                metrics.remove(&#39;topOfSearchImpressionShare&#39;)
+            
+            else:
+                try:
+                    assert group_by in [&#39;campaign&#39;,&#39;adGroup&#39;]
+                except:
+                    raise ValueError(f&#34;Group by {grouper} is not supported by this {report_type_id}&#34;)
+                    
+                if group_by == &#39;campaign&#39;:                    
+                    filter_field = &#34;campaignStatus&#34;
+                    metrics = metrics.copy() + CAMP_GROUP_CAMP.copy() # add metricsspecific to campaign
+                      
+                if group_by == &#39;adGroup&#39;:
+                    filter_field = &#34;adStatus&#34;
+                    metrics = metrics.copy() + CAMP_GROUP_ADG.copy() # add metricsspecific to adGroups
+            
+                filter_values = [&#34;ENABLED&#34;,&#34;PAUSED&#34;,&#34;ARCHIVED&#34;]
+                #        
+                dict_filter = self.create_filter(
+                                    field=filter_field, 
+                                    values=filter_values)
+            
+        if report_type_id == &#39;spTargeting&#39;:        
+            group_by = &#39;targeting&#39; #default
+            metrics = TARGETING_METRICS.copy() + METRICS.copy()
+            #
+            filter_field = &#34;keywordType&#34;
+            filter_values = [&#34;BROAD&#34;,&#34;PHRASE&#34;,&#34;EXACT&#34;]
+            #        
+            dict_filter = self.create_filter(
+                                field=filter_field, 
+                                values=filter_values)        
+        
+        # =====================X===========X========================#
+        tasks = []
+        async with aiohttp.ClientSession() as session:
+            
+            if month is not None:                
+                is_valid_month_string(month) #from utils.py
+                print(&#34;This will be a &#39;monthly report&#39;&#34;)
+                # the day does&#39;t matter,
+                # start_date &amp; end_date will be defined in the fetch_report method                
+                date = month + &#34;-01&#34;  
+                #
+                task = asyncio.create_task(
+                    # my async function
+                    #######################################                    
+                        self.fetch_report(
+                            report_type_id=report_type_id,
+                            date=date,
+                            time_unit=time_unit,
+                            group_by=group_by,
+                            metrics=metrics,
+                            filter_field=dict_filter,
+                            month=month
+                        ) # ends fetch_report
+                    #######################################
+                    ) # ends create_task
+                
+                tasks.append(task)      
+           
+            else:
+                # this will be a day-by-day report, according to date range 
+                for date in pd.date_range(start_date, end_date).astype(str):
+                             
+                    task = asyncio.create_task(
+                    # my async function
+                    #######################################                    
+                        self.fetch_report(
+                            report_type_id=report_type_id,
+                            date=date,
+                            time_unit=time_unit,
+                            group_by=group_by,
+                            metrics=metrics,
+                            filter_field=dict_filter,
+                            month=month
+                        )
+                    #######################################
+                    )
+                    tasks.append(task)
+    
+            await asyncio.gather(*tasks)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="amz_ads_py.reports.Debug"><code class="flex name class">
+<span>class <span class="ident">Debug</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This class stores objects from various requests,
+to investigate if the requests are going well</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Debug(Root):
+    &#34;&#34;&#34;This class stores objects from various requests,
+    to investigate if the requests are going well&#34;&#34;&#34;
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._resp_step1 = None
+        self._resp_step2 = None      
+
+    @property
+    def resp_step1(self):
+        return self._resp_step1
+
+    @resp_step1.setter
+    def resp_step1(self, new_value):
+        self._resp_step1  = new_value
+        return self._resp_step1
+
+    @resp_step1.deleter
+    def resp_step1(self):
+        del self._resp_step1
+    
+    @property
+    def resp_step2(self):
+        return self._resp_step2
+
+    @resp_step2.setter
+    def resp_step2(self, new_value):
+        self._resp_step2 = new_value
+        return self._resp_step2
+
+    @resp_step2.deleter
+    def resp_step2(self):
+        del self.self._resp_step2</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="amz_ads_py.root.Root" href="root.html#amz_ads_py.root.Root">Root</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="amz_ads_py.reports.Reports" href="#amz_ads_py.reports.Reports">Reports</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="amz_ads_py.reports.Debug.resp_step1"><code class="name">var <span class="ident">resp_step1</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def resp_step1(self):
+    return self._resp_step1</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.reports.Debug.resp_step2"><code class="name">var <span class="ident">resp_step2</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def resp_step2(self):
+    return self._resp_step2</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="amz_ads_py.reports.Metadata"><code class="flex name class">
+<span>class <span class="ident">Metadata</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates metadata info about reports as DataFrame stored in metadata/.
+NOTE: The DataFrame generated may file contain sensitive data such as access_token,
+client_id, client_secret and other information.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Metadata(Root):
+    &#34;&#34;&#34;Creates metadata info about reports as DataFrame stored in metadata/.
+    NOTE: The DataFrame generated may file contain sensitive data such as access_token, 
+    client_id, client_secret and other information.
+    &#34;&#34;&#34;
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)        
+        self.meta_path = os.path.join(os.getcwd(),&#39;metadata&#39;)
+        verify_and_create_directory(self.meta_path)
+
+        if not [f for f in os.listdir(self.meta_path) if f.endswith(&#39;.pkl&#39;)]:
+            self.report_df = pd.DataFrame([],dtype=float, columns=data_columns)
+        else:
+            self.read_report_df()
+
+
+    def read_report_df(self):
+        &#34;&#34;&#34;reads the last pkl file in the metadata directory&#34;&#34;&#34;        
+        last_file = [f for f in os.listdir(self.meta_path) if f.endswith(&#39;.pkl&#39;)][-1]
+        self.report_df = pd.read_pickle(os.path.join(self.meta_path,last_file))
+        return
+
+
+    def save_report_df(self):
+        &#34;&#34;&#34;saves at /metadata/&#34;&#34;&#34;
+        filename = f&#34;{datetime.now(UTC).strftime(&#34;%Y-%m-%d&#34;)}.pkl&#34;        
+        self.report_df.to_pickle(os.path.join(self.meta_path,filename))
+        return
+
+    
+    def gen_report_metadata_df(self, json:dict):
+        &#34;&#34;&#34;Creates a dataframe with metadata from requests on reports.
+        Useful if in step2 the functions run out of retries, the 
+        report_id can still work and retry the function later.        
+        &#34;&#34;&#34;
+        data = pd.DataFrame({},dtype=float, columns=data_columns)
+        data[&#39;created_at&#39;] = [json.get(&#39;createdAt&#39;)]
+        data[&#39;region&#39;] = [self.region]
+        data[&#39;report_type&#39;] = [json.get(&#39;configuration&#39;).get(&#39;reportTypeId&#39;)]
+        data[&#39;start_date&#39;] = [json.get(&#39;startDate&#39;)]
+        data[&#39;time_unit&#39;] = [json.get(&#39;configuration&#39;).get(&#39;timeUnit&#39;)]
+        data[&#39;report_id&#39;] = [json.get(&#39;reportId&#39;)]
+        data[&#39;expires_at&#39;] = [None]
+        data[&#39;estim_exp_time&#39;] = [pd.Timestamp(json.get(&#39;createdAt&#39;),tz=&#39;UTC&#39;)+ pd.Timedelta(minutes=100)]
+        data[&#39;url&#39;] = [None]
+        data[&#39;downloaded&#39;] = [0]
+        data[&#39;discarded&#39;] = [0]
+        data[&#39;error&#39;] = [None]
+        data[&#39;error_url&#39;] = [None]
+        data[&#39;error_header&#39;] = [None]
+        data[&#39;error_data&#39;] = [None]
+
+        if not self.report_df.empty:
+            self.report_df = pd.concat([self.report_df,data])
+        else:
+            self.report_df = data.copy()
+        self.report_df.reset_index(drop=True,inplace=True)
+        #return self.report_df
+        return
+
+
+    def update_report_metadata_df(
+        self, 
+        json:Optional[dict]=None, 
+        url:Optional[str]=None, 
+        error_url=None,
+        error_header=None,
+        error_data=None
+        ):
+        &#34;&#34;&#34;Updates dataframe with metadata from requests on reports.              
+        &#34;&#34;&#34;
+        if json:
+            _id = json.get(&#39;reportId&#39;)
+
+            if error_url and error_header and error_data:
+                self.report_df.loc[self.report_df.report_id==_id,&#39;error&#39;] = json
+                self.report_df.loc[self.report_df.report_id==_id,&#39;error_url&#39;] = error_url
+                self.report_df.loc[self.report_df.report_id==_id,&#39;error_header&#39;] = error_header
+                self.report_df.loc[self.report_df.report_id==_id,&#39;error_data&#39;] = error_data
+            else:
+                self.report_df.loc[self.report_df.report_id==_id,&#39;url&#39;] = json.get(&#39;url&#39;)
+                self.report_df.loc[self.report_df.report_id==_id,&#39;expires_at&#39;] = json.get(&#39;urlExpiresAt&#39;)
+                
+        if url:
+            self.report_df.loc[self.report_df.url==url,&#39;downloaded&#39;] = 1
+        return</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="amz_ads_py.root.Root" href="root.html#amz_ads_py.root.Root">Root</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="amz_ads_py.reports.Reports" href="#amz_ads_py.reports.Reports">Reports</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="amz_ads_py.reports.Metadata.gen_report_metadata_df"><code class="name flex">
+<span>def <span class="ident">gen_report_metadata_df</span></span>(<span>self, json: dict)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a dataframe with metadata from requests on reports.
+Useful if in step2 the functions run out of retries, the
+report_id can still work and retry the function later.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def gen_report_metadata_df(self, json:dict):
+    &#34;&#34;&#34;Creates a dataframe with metadata from requests on reports.
+    Useful if in step2 the functions run out of retries, the 
+    report_id can still work and retry the function later.        
+    &#34;&#34;&#34;
+    data = pd.DataFrame({},dtype=float, columns=data_columns)
+    data[&#39;created_at&#39;] = [json.get(&#39;createdAt&#39;)]
+    data[&#39;region&#39;] = [self.region]
+    data[&#39;report_type&#39;] = [json.get(&#39;configuration&#39;).get(&#39;reportTypeId&#39;)]
+    data[&#39;start_date&#39;] = [json.get(&#39;startDate&#39;)]
+    data[&#39;time_unit&#39;] = [json.get(&#39;configuration&#39;).get(&#39;timeUnit&#39;)]
+    data[&#39;report_id&#39;] = [json.get(&#39;reportId&#39;)]
+    data[&#39;expires_at&#39;] = [None]
+    data[&#39;estim_exp_time&#39;] = [pd.Timestamp(json.get(&#39;createdAt&#39;),tz=&#39;UTC&#39;)+ pd.Timedelta(minutes=100)]
+    data[&#39;url&#39;] = [None]
+    data[&#39;downloaded&#39;] = [0]
+    data[&#39;discarded&#39;] = [0]
+    data[&#39;error&#39;] = [None]
+    data[&#39;error_url&#39;] = [None]
+    data[&#39;error_header&#39;] = [None]
+    data[&#39;error_data&#39;] = [None]
+
+    if not self.report_df.empty:
+        self.report_df = pd.concat([self.report_df,data])
+    else:
+        self.report_df = data.copy()
+    self.report_df.reset_index(drop=True,inplace=True)
+    #return self.report_df
+    return</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.reports.Metadata.read_report_df"><code class="name flex">
+<span>def <span class="ident">read_report_df</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>reads the last pkl file in the metadata directory</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_report_df(self):
+    &#34;&#34;&#34;reads the last pkl file in the metadata directory&#34;&#34;&#34;        
+    last_file = [f for f in os.listdir(self.meta_path) if f.endswith(&#39;.pkl&#39;)][-1]
+    self.report_df = pd.read_pickle(os.path.join(self.meta_path,last_file))
+    return</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.reports.Metadata.save_report_df"><code class="name flex">
+<span>def <span class="ident">save_report_df</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>saves at /metadata/</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_report_df(self):
+    &#34;&#34;&#34;saves at /metadata/&#34;&#34;&#34;
+    filename = f&#34;{datetime.now(UTC).strftime(&#34;%Y-%m-%d&#34;)}.pkl&#34;        
+    self.report_df.to_pickle(os.path.join(self.meta_path,filename))
+    return</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.reports.Metadata.update_report_metadata_df"><code class="name flex">
+<span>def <span class="ident">update_report_metadata_df</span></span>(<span>self, json: Optional[dict] = None, url: Optional[str] = None, error_url=None, error_header=None, error_data=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Updates dataframe with metadata from requests on reports.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_report_metadata_df(
+    self, 
+    json:Optional[dict]=None, 
+    url:Optional[str]=None, 
+    error_url=None,
+    error_header=None,
+    error_data=None
+    ):
+    &#34;&#34;&#34;Updates dataframe with metadata from requests on reports.              
+    &#34;&#34;&#34;
+    if json:
+        _id = json.get(&#39;reportId&#39;)
+
+        if error_url and error_header and error_data:
+            self.report_df.loc[self.report_df.report_id==_id,&#39;error&#39;] = json
+            self.report_df.loc[self.report_df.report_id==_id,&#39;error_url&#39;] = error_url
+            self.report_df.loc[self.report_df.report_id==_id,&#39;error_header&#39;] = error_header
+            self.report_df.loc[self.report_df.report_id==_id,&#39;error_data&#39;] = error_data
+        else:
+            self.report_df.loc[self.report_df.report_id==_id,&#39;url&#39;] = json.get(&#39;url&#39;)
+            self.report_df.loc[self.report_df.report_id==_id,&#39;expires_at&#39;] = json.get(&#39;urlExpiresAt&#39;)
+            
+    if url:
+        self.report_df.loc[self.report_df.url==url,&#39;downloaded&#39;] = 1
+    return</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="amz_ads_py.reports.Reports"><code class="flex name class">
+<span>class <span class="ident">Reports</span></span>
+<span>(</span><span>region, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generates data &amp; routines to create/wait/download reports
+using Amazon REST API &amp; custom code</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Reports(Connect, Debug, Metadata):
+    &#34;&#34;&#34;Generates data &amp; routines to create/wait/download reports 
+    using Amazon REST API &amp; custom code&#34;&#34;&#34;
+    def __init__(self, region,**kwargs):
+        super().__init__(region=region, **kwargs)
+        
+
+    def create_msg(
+        self, 
+        region:str, 
+        report_type_id:str, 
+        date:str,
+        time_unit:str,
+        group_by:str
+        ) -&gt; str:
+        &#34;&#34;&#34;Generates a, informative message to be displayed while requesting
+        the reports.
+        
+        Args:
+            region (str): Region which the report represents
+            report_type_id (str): Unique identifier for report type
+            date (str): Date for the report in &#39;YYYY-MM-DD&#39; format            
+            time_unit (str): Time unit for the report            
+            group_by (str): Group results by a specific attribute
+            
+        Returns:
+            m (str): informative message        
+        &#34;&#34;&#34;
+        m = f&#34;Region: {region} | Report Type: {report_type_id} | Date: {date} | &#34;+\
+            f&#34;TimeUnit: {time_unit} | Group by: {group_by}&#34;        
+        return m
+      
+
+    def create_filter(self, field:str, values:list) -&gt; dict:
+        &#34;&#34;&#34;The filter will be the key filter
+    
+        Parameters:
+            field (str): The field to filter on
+            values (list): The values to filter with
+        
+        Returns:
+            dict: The filter dictionary
+        &#34;&#34;&#34;
+        filter_dict = {
+            &#34;filters&#34;: [
+                {
+                    &#34;field&#34;:field,
+                    &#34;values&#34;:values,
+                }
+            ],        
+        }
+        return filter_dict
+
+
+    def create_report_body(
+        self,
+        report_type_id:str,
+        start_date:str,               
+        end_date:str,
+        time_unit:str,
+        metrics:list,        
+        group_by:Union[str, list],
+        filter_field:Optional[dict]= None
+        ) -&gt; str:
+        &#34;&#34;&#34;Creates the data to post in the report api.
+
+        Parameters:
+            start_date (str): fmt %Y-%m-%d
+            end_date (str): fmt %Y-%m-%d
+            group_by (str or list): representing the groupby
+            metrics (list): list with the advertising metrics for this report
+            report_type_id (str): unique report id fmt %Y-%m-%d
+            time_unit (str): fmt %Y-%m-%d
+            filter_field (dict or None):
+
+        Returns:
+            raw_data (str): representing a json
+        ========================================================================
+        NOTE:
+            timeUnit and supported columns
+            timeUnit can be set to DAILY or SUMMARY. If you set timeUnit to DAILY, 
+            you should include date in your column list. If you set timeUnit to 
+            SUMMARY you can include startDate and endDate in your column list.        
+        &#34;&#34;&#34;
+        try:
+            assert time_unit in [&#34;DAILY&#34;,&#34;SUMMARY&#34;]
+        except:
+            raise ValueError(f&#34;The timeUnit: {time_unit} does not correspond to &#39;DAILY&#39; or &#39;SUMMARY&#39;. Verify if there are any typos or different values.&#34; )
+            
+        if time_unit == &#34;DAILY&#34;:            
+            metrics   = metrics.copy() + [&#39;date&#39;]            
+        
+        if time_unit == &#34;SUMMARY&#34;:            
+            metrics   = metrics.copy() + [&#39;startDate&#39;,&#39;endDate&#39;]            
+        
+        if isinstance(group_by,str):
+            group_by = [group_by]
+    
+        grp_by = {&#34;groupBy&#34;: [f&#34;{group}&#34; for group in group_by]}        
+        
+        raw_data = {
+            &#34;name&#34;:f&#34;SP {report_type_id} report {start_date}_{end_date}&#34;,
+            &#34;startDate&#34;:f&#34;{start_date}&#34;,
+            &#34;endDate&#34;:f&#34;{end_date}&#34;,
+            &#34;configuration&#34;: {
+                &#34;adProduct&#34;: &#34;SPONSORED_PRODUCTS&#34;,
+                #&#34;groupBy&#34;: [
+                #    f&#34;{group_by}&#34; 
+                #],
+                &#34;columns&#34;: metrics,
+                &#34;reportTypeId&#34;: f&#34;{report_type_id}&#34;,
+                &#34;timeUnit&#34;: f&#34;{time_unit}&#34;,
+                &#34;format&#34;: &#34;GZIP_JSON&#34; # CONSTANT
+            }
+        }
+        
+        raw_data[&#39;configuration&#39;].update(grp_by)
+        
+        if isinstance(filter_field, dict):
+            raw_data[&#39;configuration&#39;].update(filter_field)
+        
+        return json.dumps(raw_data)
+    
+        
+    async def generate_report(self, data_payload:str, info_msg:str=&#34;&#34;)-&gt; Optional[str]:  
+        &#34;&#34;&#34;STEP 1- Generates repost document in the Amazon Cloud
+
+        Args:
+            data_payload (str): json like string serving as payload in a request
+            info_msg (str): message containing information about the reports, 
+                such as region, date, report type, etc.
+            
+        Returns:
+            report_id (str): The report_id
+
+        Note:        
+            Equivalent cURL example:
+        ```
+        curl --location --request POST &#39;https://advertising-api.amazon.com/reporting/reports&#39; \
+            --header &#39;Content-Type: application/vnd.createasyncreportrequest.v3+json&#39; \
+            --header &#39;Amazon-Advertising-API-ClientId: amzn1.application-oa2-client.xxxxxxxxxx&#39; \
+            --header &#39;Amazon-Advertising-API-Scope: xxxxxxxxxx&#39; \
+            --header &#39;Authorization: Bearer Atza|xxxxxx&#39; \
+            --data-raw &#39;{
+                &#34;name&#34;:&#34;SP campaigns report 7/5-7/10&#34;,
+                &#34;startDate&#34;:&#34;2022-07-05&#34;,
+                &#34;endDate&#34;:&#34;2022-07-10&#34;,
+                &#34;configuration&#34;:{
+                    &#34;adProduct&#34;:&#34;SPONSORED_PRODUCTS&#34;,
+                    &#34;groupBy&#34;:[&#34;campaign&#34;,&#34;adGroup&#34;],
+                    &#34;columns&#34;:[&#34;campaignId&#34;,&#34;adGroupId&#34;,&#34;impressions&#34;,&#34;clicks&#34;,&#34;cost&#34;,&#34;purchases1d&#34;,&#34;purchases7d&#34;,&#34;purchases14d&#34;,&#34;purchases30d&#34;,&#34;startDate&#34;,&#34;endDate&#34;],
+                    &#34;reportTypeId&#34;:&#34;spCampaigns&#34;,
+                    &#34;timeUnit&#34;:&#34;SUMMARY&#34;,
+                    &#34;format&#34;:&#34;GZIP_JSON&#34;
+                }
+            }&#39;       
+        ```
+        &#34;&#34;&#34;        
+        lst_headers  = [&#39;amz_ad_api_cli_id&#39;,&#39;authorize&#39;,
+                        &#39;amz_ad_api_scope&#39;,&#39;cont_rep_json_v3&#39;]
+        self.URL = urljoin(self.prefix_advt, &#39;/reporting/reports&#39;)
+        self.HEADERS = self._set_header_payload(
+                                    list_of_keys=lst_headers, 
+                                    kind=&#39;headers&#39;, 
+                                    return_as=&#39;dict&#39;)
+               
+        self.DATA = data_payload
+        
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self.URL, headers=self.HEADERS, data=self.DATA) as response:
+                
+                self.resp_step1 = await response.json() # Debug.method
+                
+                if response.status == 200:                    
+                    report_id = (await response.json()).get(&#39;reportId&#39;)
+                    ###### Metadata.methods ############################                     
+                    self.update_report_metadata_df(json=self.resp_step1)                      
+                    self.save_report_df()
+                    ####################################################  
+                    print(f&#34;Step 1 concluded.{info_msg}&#34;)
+                    return report_id
+                else:
+                    ##### Metadata.methods ##################
+                    self.update_report_metadata_df(
+                        json=self.resp_step1,
+                        error_url=self.URL,
+                        error_header=self.HEADERS,
+                        error_data=self.DATA,          
+                    )
+                    self.save_report_df()                    
+                    #########################################
+                    error_msg = f&#34;Expected response.status == 200.\nResponse:{self.resp_step1}&#34;
+                    error_msg2= f&#34;\nurl:{self.URL}\nheaders:{self.HEADERS}\ndata:{self.DATA}&#34;
+                    raise RuntimeError(error_msg+error_msg2)
+            
+
+    async def check_report_status(
+        self, 
+        report_id: str, 
+        retries: int = 25, 
+        backoff_factor: float = 1,
+        limit_wait: int = 32,
+        info_msg: str=&#34;&#34;
+        ) -&gt; Optional[str]:
+        &#34;&#34;&#34;
+        STEP 2- Check the status of a report and retrieve its download URL if it&#39;s completed.
+    
+        Args:
+            report_id (str): The ID of the report to check.
+            retries (int): The number of retries to attempt before giving up.
+            backoff_factor (float): The factor to use for exponential backoff between retries.
+            limit_wait (int): max number of sec. tolerated to asyncio.wait inside the function
+            info_msg (str): message containing information about the reports, such as region, 
+            date, report type, etc.
+    
+        Returns:
+            download_url (str): The download URL for the completed report
+        &#34;&#34;&#34;
+        lst_headers = [&#39;amz_ad_api_cli_id&#39;, &#39;authorize&#39;, 
+                       &#39;amz_ad_api_scope&#39;, &#39;cont_rep_json_v3&#39;]
+        self.URL = urljoin(self.prefix_advt, f&#39;/reporting/reports/{report_id}&#39;)
+        self.HEADERS = self._set_header_payload(
+                                    list_of_keys=lst_headers, 
+                                    kind=&#39;headers&#39;, 
+                                    return_as=&#39;dict&#39;)
+
+
+        async with aiohttp.ClientSession() as session:
+            
+            for attempt in range(1, retries + 1):
+                
+                async with session.get(self.URL, headers=self.HEADERS) as response:
+                    self.resp_step2 = await response.json() # Debug.method
+                    
+                    if response.status == 200:
+                        report_status = (await response.json()).get(&#39;status&#39;)
+                        if report_status == &#39;COMPLETED&#39;:
+                            download_url = (await response.json()).get(&#39;url&#39;)
+                            ###### Metadata.methods ############################                     
+                            self.update_report_metadata_df(json=self.resp_step2)                      
+                            self.save_report_df()
+                            ####################################################                      
+                            print(f&#34;Step 2 concluded.{info_msg}&#34;)
+                            return download_url
+                    else:
+                        ##### Metadata.methods ##################
+                        self.update_report_metadata_df(
+                            json=self.resp_step2,
+                            error_url=self.URL,
+                            error_header=self.HEADERS,
+                            error_data=self.DATA,          
+                        )
+                        self.save_report_df()
+                        #########################################
+                        error_msg = f&#34;Expected response.status == 200.\nResponse:{self.resp_step2}&#34;
+                        raise RuntimeError(error_msg)
+    
+                # Backoff logic
+                backoff_time = min(backoff_factor * (2 ** attempt), limit_wait)
+                screen_msg = f&#34;Attempt#:{attempt}.Waiting {backoff_time}s.{info_msg}&#34;
+                for _ in tqdm(range(backoff_time), desc=screen_msg):
+                    await asyncio.sleep(1)
+
+            raise Exception(f&#34;Request failed after {retries} retries.{info_msg}&#34;)
+
+    
+    async def download_compressed_file(
+        self, 
+        url:str, 
+        path:Union[str, os.PathLike], 
+        info_msg:str=&#34;&#34;
+        ) -&gt; None:
+        &#34;&#34;&#34;STEP 3 - Downloads file as gzip.
+
+        Args:
+            url (str): string representing the url
+            path (str): string representing the file path to be saved
+            info_msg (str): message containing information about the reports, such as region, 
+                date, report type, etc.
+    
+        Returns:
+            None
+        &#34;&#34;&#34;
+        async with aiohttp.ClientSession() as session:
+            
+            async with session.get(url) as response:
+                local_filename = path + &#34;.gz&#34;
+                with open(local_filename, &#39;wb&#39;) as f:
+                    while True:
+                        chunk = await response.content.read(1024)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+        #updated metadata
+        self.update_report_metadata_df(url=url)        
+        self.save_report_df()
+        print(f&#34;Step 3 concluded.{info_msg} Downloaded {local_filename}&#34;)
+        return    
+
+
+    async def fetch_report(
+        self,
+        report_type_id:str,
+        date:str,
+        time_unit:str,
+        group_by:Union[str, list],
+        metrics:list,
+        filter_field:Optional[dict],
+        month:Optional[str]
+        )-&gt; None:
+        &#34;&#34;&#34;Retrieves one report by following all the necessary steps:
+            STEP 1 - POST report
+            STEP 2 - GET report status &amp; url
+            STEP 3 - GET download report
+        
+        Args:
+            report_type_id (str): Unique identifier for report type
+            date (str): Date for the report in &#39;YYYY-MM-DD&#39; format            
+            time_unit (str): Time unit for the report            
+            group_by (str): Group results by a specific attribute
+            metrics:list,
+            filter_field
+            month Optional[str]: Month to retrieve if monthly periodicity is selected, in &#39;YYYY-MM&#39; format
+
+        Returns:
+            None
+        &#34;&#34;&#34;
+        if month:
+            start_date, end_date = get_first_and_last_days_of_month(month)  #from utils.py
+            peridiocity = &#34;monthly&#34;
+        else:
+            start_date, end_date = date, date # it will be the same day
+            peridiocity = &#34;daily&#34;
+        
+        body = self.create_report_body(
+                        start_date=start_date,
+                        end_date=end_date,          
+                        group_by=group_by,
+                        metrics=metrics,
+                        report_type_id=report_type_id,
+                        time_unit=time_unit,
+                        filter_field=filter_field)
+        
+        self.fetch_access_tkn(method=&#39;refresh&#39;)
+
+        msg = self.create_msg(self.region, report_type_id, date, time_unit, group_by)     
+        
+        #### STEP 1 - GENERATING REPORT
+        report_id = await self.generate_report(data_payload=body,info_msg=msg)
+
+        #### STEP 2 - CHECKING REPORT STATUS
+        download_url = await self.check_report_status(report_id=report_id,info_msg=msg)
+
+        #### STEP 3 - DOWNLOADING REPORT FILE
+        # group_by can be a str, list
+        if isinstance(group_by, list):
+            group_by = &#34;_&#34;.join(group_by)        
+        
+        folder_path = os.path.join(
+                        os.getcwd(),
+                        &#39;reports&#39;,
+                        f&#39;{self.region}&#39;,
+                        f&#39;{report_type_id}&#39;,
+                        f&#39;{peridiocity}&#39;,
+                        f&#39;{time_unit}&#39;,
+                        f&#39;{group_by}&#39;,
+                        )
+        verify_and_create_directory(directory_path=folder_path)
+        #
+        file_name = f&#34;{start_date}_{end_date}_{report_type_id}&#34; 
+        full_path = os.path.join(folder_path,file_name)            
+        await self.download_compressed_file(url=download_url, path=full_path,info_msg=msg)
+        return
+
+    
+    async def retrieve_reports_async(
+        self,
+        report_type_id:str,
+        start_date:str, 
+        end_date:str,
+        time_unit:str,
+        month:Optional[str],
+        group_by:str
+        )-&gt;None:
+        &#34;&#34;&#34;
+        Retrieves reports according to date range or monthly periodicity.
+        
+        Args:
+            report_type_id (str): Unique identifier for report type
+            start_date (str): Start date for the report in &#39;YYYY-MM-DD&#39; format
+            end_date (str): End date for the report in &#39;YYYY-MM-DD&#39; format
+            time_unit (str): Time unit for the report
+            month Optional[str]: Month to retrieve if monthly periodicity is selected, in &#39;YYYY-MM&#39; format
+            group_by (str): Group results by a specific attribute
+
+        Returns:
+            None        
+        &#34;&#34;&#34;        
+        # TODO: change this function to work with other reports
+        # Avaiable report_types:
+        # report_types = [&#39;spCampaigns&#39;,&#39;spTargeting&#39;]
+        try:
+            assert report_type_id in [&#39;spCampaigns&#39;,&#39;spTargeting&#39;]
+        except:
+            raise ValueError(f&#34;The report_type_id: {report_type_id} does not correspond to &#39;spCampaigns&#39; or &#39;spTargeting&#39;. Verify if there are any typos or different values.&#34; )
+        
+        
+        if report_type_id == &#39;spCampaigns&#39;:          
+            metrics = CAMPAING_METRICS.copy() + METRICS.copy()            
+            
+            if group_by == &#39;default&#39;:
+                group_by = [&#34;campaign&#34;,&#34;adGroup&#34;]
+                dict_filter = None               
+                metrics = metrics.copy()+CAMP_GROUP_CAMP.copy()+CAMP_GROUP_ADG.copy()
+                # it has to remove this, otherwise we have reponse error
+                metrics.remove(&#39;topOfSearchImpressionShare&#39;)
+            
+            else:
+                try:
+                    assert group_by in [&#39;campaign&#39;,&#39;adGroup&#39;]
+                except:
+                    raise ValueError(f&#34;Group by {grouper} is not supported by this {report_type_id}&#34;)
+                    
+                if group_by == &#39;campaign&#39;:                    
+                    filter_field = &#34;campaignStatus&#34;
+                    metrics = metrics.copy() + CAMP_GROUP_CAMP.copy() # add metricsspecific to campaign
+                      
+                if group_by == &#39;adGroup&#39;:
+                    filter_field = &#34;adStatus&#34;
+                    metrics = metrics.copy() + CAMP_GROUP_ADG.copy() # add metricsspecific to adGroups
+            
+                filter_values = [&#34;ENABLED&#34;,&#34;PAUSED&#34;,&#34;ARCHIVED&#34;]
+                #        
+                dict_filter = self.create_filter(
+                                    field=filter_field, 
+                                    values=filter_values)
+            
+        if report_type_id == &#39;spTargeting&#39;:        
+            group_by = &#39;targeting&#39; #default
+            metrics = TARGETING_METRICS.copy() + METRICS.copy()
+            #
+            filter_field = &#34;keywordType&#34;
+            filter_values = [&#34;BROAD&#34;,&#34;PHRASE&#34;,&#34;EXACT&#34;]
+            #        
+            dict_filter = self.create_filter(
+                                field=filter_field, 
+                                values=filter_values)        
+        
+        # =====================X===========X========================#
+        tasks = []
+        async with aiohttp.ClientSession() as session:
+            
+            if month is not None:                
+                is_valid_month_string(month) #from utils.py
+                print(&#34;This will be a &#39;monthly report&#39;&#34;)
+                # the day does&#39;t matter,
+                # start_date &amp; end_date will be defined in the fetch_report method                
+                date = month + &#34;-01&#34;  
+                #
+                task = asyncio.create_task(
+                    # my async function
+                    #######################################                    
+                        self.fetch_report(
+                            report_type_id=report_type_id,
+                            date=date,
+                            time_unit=time_unit,
+                            group_by=group_by,
+                            metrics=metrics,
+                            filter_field=dict_filter,
+                            month=month
+                        ) # ends fetch_report
+                    #######################################
+                    ) # ends create_task
+                
+                tasks.append(task)      
+           
+            else:
+                # this will be a day-by-day report, according to date range 
+                for date in pd.date_range(start_date, end_date).astype(str):
+                             
+                    task = asyncio.create_task(
+                    # my async function
+                    #######################################                    
+                        self.fetch_report(
+                            report_type_id=report_type_id,
+                            date=date,
+                            time_unit=time_unit,
+                            group_by=group_by,
+                            metrics=metrics,
+                            filter_field=dict_filter,
+                            month=month
+                        )
+                    #######################################
+                    )
+                    tasks.append(task)
+    
+            await asyncio.gather(*tasks)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="amz_ads_py.connect.Connect" href="connect.html#amz_ads_py.connect.Connect">Connect</a></li>
+<li><a title="amz_ads_py.authorization.Authorization" href="authorization.html#amz_ads_py.authorization.Authorization">Authorization</a></li>
+<li><a title="amz_ads_py.reports.Debug" href="#amz_ads_py.reports.Debug">Debug</a></li>
+<li><a title="amz_ads_py.reports.Metadata" href="#amz_ads_py.reports.Metadata">Metadata</a></li>
+<li><a title="amz_ads_py.root.Root" href="root.html#amz_ads_py.root.Root">Root</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="amz_ads_py.amzapi.Amzapi" href="amzapi.html#amz_ads_py.amzapi.Amzapi">Amzapi</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="amz_ads_py.reports.Reports.check_report_status"><code class="name flex">
+<span>async def <span class="ident">check_report_status</span></span>(<span>self, report_id: str, retries: int = 25, backoff_factor: float = 1, limit_wait: int = 32, info_msg: str = '') -> Optional[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>STEP 2- Check the status of a report and retrieve its download URL if it's completed.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>report_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>The ID of the report to check.</dd>
+<dt><strong><code>retries</code></strong> :&ensp;<code>int</code></dt>
+<dd>The number of retries to attempt before giving up.</dd>
+<dt><strong><code>backoff_factor</code></strong> :&ensp;<code>float</code></dt>
+<dd>The factor to use for exponential backoff between retries.</dd>
+<dt><strong><code>limit_wait</code></strong> :&ensp;<code>int</code></dt>
+<dd>max number of sec. tolerated to asyncio.wait inside the function</dd>
+<dt><strong><code>info_msg</code></strong> :&ensp;<code>str</code></dt>
+<dd>message containing information about the reports, such as region, </dd>
+</dl>
+<p>date, report type, etc.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>download_url (str): The download URL for the completed report</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def check_report_status(
+    self, 
+    report_id: str, 
+    retries: int = 25, 
+    backoff_factor: float = 1,
+    limit_wait: int = 32,
+    info_msg: str=&#34;&#34;
+    ) -&gt; Optional[str]:
+    &#34;&#34;&#34;
+    STEP 2- Check the status of a report and retrieve its download URL if it&#39;s completed.
+
+    Args:
+        report_id (str): The ID of the report to check.
+        retries (int): The number of retries to attempt before giving up.
+        backoff_factor (float): The factor to use for exponential backoff between retries.
+        limit_wait (int): max number of sec. tolerated to asyncio.wait inside the function
+        info_msg (str): message containing information about the reports, such as region, 
+        date, report type, etc.
+
+    Returns:
+        download_url (str): The download URL for the completed report
+    &#34;&#34;&#34;
+    lst_headers = [&#39;amz_ad_api_cli_id&#39;, &#39;authorize&#39;, 
+                   &#39;amz_ad_api_scope&#39;, &#39;cont_rep_json_v3&#39;]
+    self.URL = urljoin(self.prefix_advt, f&#39;/reporting/reports/{report_id}&#39;)
+    self.HEADERS = self._set_header_payload(
+                                list_of_keys=lst_headers, 
+                                kind=&#39;headers&#39;, 
+                                return_as=&#39;dict&#39;)
+
+
+    async with aiohttp.ClientSession() as session:
+        
+        for attempt in range(1, retries + 1):
+            
+            async with session.get(self.URL, headers=self.HEADERS) as response:
+                self.resp_step2 = await response.json() # Debug.method
+                
+                if response.status == 200:
+                    report_status = (await response.json()).get(&#39;status&#39;)
+                    if report_status == &#39;COMPLETED&#39;:
+                        download_url = (await response.json()).get(&#39;url&#39;)
+                        ###### Metadata.methods ############################                     
+                        self.update_report_metadata_df(json=self.resp_step2)                      
+                        self.save_report_df()
+                        ####################################################                      
+                        print(f&#34;Step 2 concluded.{info_msg}&#34;)
+                        return download_url
+                else:
+                    ##### Metadata.methods ##################
+                    self.update_report_metadata_df(
+                        json=self.resp_step2,
+                        error_url=self.URL,
+                        error_header=self.HEADERS,
+                        error_data=self.DATA,          
+                    )
+                    self.save_report_df()
+                    #########################################
+                    error_msg = f&#34;Expected response.status == 200.\nResponse:{self.resp_step2}&#34;
+                    raise RuntimeError(error_msg)
+
+            # Backoff logic
+            backoff_time = min(backoff_factor * (2 ** attempt), limit_wait)
+            screen_msg = f&#34;Attempt#:{attempt}.Waiting {backoff_time}s.{info_msg}&#34;
+            for _ in tqdm(range(backoff_time), desc=screen_msg):
+                await asyncio.sleep(1)
+
+        raise Exception(f&#34;Request failed after {retries} retries.{info_msg}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.reports.Reports.create_filter"><code class="name flex">
+<span>def <span class="ident">create_filter</span></span>(<span>self, field: str, values: list) -> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The filter will be the key filter</p>
+<h2 id="parameters">Parameters</h2>
+<p>field (str): The field to filter on
+values (list): The values to filter with</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>The filter dictionary</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_filter(self, field:str, values:list) -&gt; dict:
+    &#34;&#34;&#34;The filter will be the key filter
+
+    Parameters:
+        field (str): The field to filter on
+        values (list): The values to filter with
+    
+    Returns:
+        dict: The filter dictionary
+    &#34;&#34;&#34;
+    filter_dict = {
+        &#34;filters&#34;: [
+            {
+                &#34;field&#34;:field,
+                &#34;values&#34;:values,
+            }
+        ],        
+    }
+    return filter_dict</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.reports.Reports.create_msg"><code class="name flex">
+<span>def <span class="ident">create_msg</span></span>(<span>self, region: str, report_type_id: str, date: str, time_unit: str, group_by: str) -> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generates a, informative message to be displayed while requesting
+the reports.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>region</code></strong> :&ensp;<code>str</code></dt>
+<dd>Region which the report represents</dd>
+<dt><strong><code>report_type_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>Unique identifier for report type</dd>
+<dt><strong><code>date</code></strong> :&ensp;<code>str</code></dt>
+<dd>Date for the report in 'YYYY-MM-DD' format
+</dd>
+<dt><strong><code>time_unit</code></strong> :&ensp;<code>str</code></dt>
+<dd>Time unit for the report
+</dd>
+<dt><strong><code>group_by</code></strong> :&ensp;<code>str</code></dt>
+<dd>Group results by a specific attribute</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>m (str): informative message</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_msg(
+    self, 
+    region:str, 
+    report_type_id:str, 
+    date:str,
+    time_unit:str,
+    group_by:str
+    ) -&gt; str:
+    &#34;&#34;&#34;Generates a, informative message to be displayed while requesting
+    the reports.
+    
+    Args:
+        region (str): Region which the report represents
+        report_type_id (str): Unique identifier for report type
+        date (str): Date for the report in &#39;YYYY-MM-DD&#39; format            
+        time_unit (str): Time unit for the report            
+        group_by (str): Group results by a specific attribute
+        
+    Returns:
+        m (str): informative message        
+    &#34;&#34;&#34;
+    m = f&#34;Region: {region} | Report Type: {report_type_id} | Date: {date} | &#34;+\
+        f&#34;TimeUnit: {time_unit} | Group by: {group_by}&#34;        
+    return m</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.reports.Reports.create_report_body"><code class="name flex">
+<span>def <span class="ident">create_report_body</span></span>(<span>self, report_type_id: str, start_date: str, end_date: str, time_unit: str, metrics: list, group_by: Union[str, list], filter_field: Optional[dict] = None) -> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates the data to post in the report api.</p>
+<h2 id="parameters">Parameters</h2>
+<p>start_date (str): fmt %Y-%m-%d
+end_date (str): fmt %Y-%m-%d
+group_by (str or list): representing the groupby
+metrics (list): list with the advertising metrics for this report
+report_type_id (str): unique report id fmt %Y-%m-%d
+time_unit (str): fmt %Y-%m-%d
+filter_field (dict or None):</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>raw_data (str): representing a json</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>========================================================================</p>
+<h2 id="note">Note</h2>
+<p>timeUnit and supported columns
+timeUnit can be set to DAILY or SUMMARY. If you set timeUnit to DAILY,
+you should include date in your column list. If you set timeUnit to
+SUMMARY you can include startDate and endDate in your column list.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_report_body(
+    self,
+    report_type_id:str,
+    start_date:str,               
+    end_date:str,
+    time_unit:str,
+    metrics:list,        
+    group_by:Union[str, list],
+    filter_field:Optional[dict]= None
+    ) -&gt; str:
+    &#34;&#34;&#34;Creates the data to post in the report api.
+
+    Parameters:
+        start_date (str): fmt %Y-%m-%d
+        end_date (str): fmt %Y-%m-%d
+        group_by (str or list): representing the groupby
+        metrics (list): list with the advertising metrics for this report
+        report_type_id (str): unique report id fmt %Y-%m-%d
+        time_unit (str): fmt %Y-%m-%d
+        filter_field (dict or None):
+
+    Returns:
+        raw_data (str): representing a json
+    ========================================================================
+    NOTE:
+        timeUnit and supported columns
+        timeUnit can be set to DAILY or SUMMARY. If you set timeUnit to DAILY, 
+        you should include date in your column list. If you set timeUnit to 
+        SUMMARY you can include startDate and endDate in your column list.        
+    &#34;&#34;&#34;
+    try:
+        assert time_unit in [&#34;DAILY&#34;,&#34;SUMMARY&#34;]
+    except:
+        raise ValueError(f&#34;The timeUnit: {time_unit} does not correspond to &#39;DAILY&#39; or &#39;SUMMARY&#39;. Verify if there are any typos or different values.&#34; )
+        
+    if time_unit == &#34;DAILY&#34;:            
+        metrics   = metrics.copy() + [&#39;date&#39;]            
+    
+    if time_unit == &#34;SUMMARY&#34;:            
+        metrics   = metrics.copy() + [&#39;startDate&#39;,&#39;endDate&#39;]            
+    
+    if isinstance(group_by,str):
+        group_by = [group_by]
+
+    grp_by = {&#34;groupBy&#34;: [f&#34;{group}&#34; for group in group_by]}        
+    
+    raw_data = {
+        &#34;name&#34;:f&#34;SP {report_type_id} report {start_date}_{end_date}&#34;,
+        &#34;startDate&#34;:f&#34;{start_date}&#34;,
+        &#34;endDate&#34;:f&#34;{end_date}&#34;,
+        &#34;configuration&#34;: {
+            &#34;adProduct&#34;: &#34;SPONSORED_PRODUCTS&#34;,
+            #&#34;groupBy&#34;: [
+            #    f&#34;{group_by}&#34; 
+            #],
+            &#34;columns&#34;: metrics,
+            &#34;reportTypeId&#34;: f&#34;{report_type_id}&#34;,
+            &#34;timeUnit&#34;: f&#34;{time_unit}&#34;,
+            &#34;format&#34;: &#34;GZIP_JSON&#34; # CONSTANT
+        }
+    }
+    
+    raw_data[&#39;configuration&#39;].update(grp_by)
+    
+    if isinstance(filter_field, dict):
+        raw_data[&#39;configuration&#39;].update(filter_field)
+    
+    return json.dumps(raw_data)</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.reports.Reports.download_compressed_file"><code class="name flex">
+<span>async def <span class="ident">download_compressed_file</span></span>(<span>self, url: str, path: Union[str, os.PathLike], info_msg: str = '') -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>STEP 3 - Downloads file as gzip.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>url</code></strong> :&ensp;<code>str</code></dt>
+<dd>string representing the url</dd>
+<dt><strong><code>path</code></strong> :&ensp;<code>str</code></dt>
+<dd>string representing the file path to be saved</dd>
+<dt><strong><code>info_msg</code></strong> :&ensp;<code>str</code></dt>
+<dd>message containing information about the reports, such as region,
+date, report type, etc.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def download_compressed_file(
+    self, 
+    url:str, 
+    path:Union[str, os.PathLike], 
+    info_msg:str=&#34;&#34;
+    ) -&gt; None:
+    &#34;&#34;&#34;STEP 3 - Downloads file as gzip.
+
+    Args:
+        url (str): string representing the url
+        path (str): string representing the file path to be saved
+        info_msg (str): message containing information about the reports, such as region, 
+            date, report type, etc.
+
+    Returns:
+        None
+    &#34;&#34;&#34;
+    async with aiohttp.ClientSession() as session:
+        
+        async with session.get(url) as response:
+            local_filename = path + &#34;.gz&#34;
+            with open(local_filename, &#39;wb&#39;) as f:
+                while True:
+                    chunk = await response.content.read(1024)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+    #updated metadata
+    self.update_report_metadata_df(url=url)        
+    self.save_report_df()
+    print(f&#34;Step 3 concluded.{info_msg} Downloaded {local_filename}&#34;)
+    return    </code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.reports.Reports.fetch_report"><code class="name flex">
+<span>async def <span class="ident">fetch_report</span></span>(<span>self, report_type_id: str, date: str, time_unit: str, group_by: Union[str, list], metrics: list, filter_field: Optional[dict], month: Optional[str]) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retrieves one report by following all the necessary steps:
+STEP 1 - POST report
+STEP 2 - GET report status &amp; url
+STEP 3 - GET download report</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>report_type_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>Unique identifier for report type</dd>
+<dt><strong><code>date</code></strong> :&ensp;<code>str</code></dt>
+<dd>Date for the report in 'YYYY-MM-DD' format
+</dd>
+<dt><strong><code>time_unit</code></strong> :&ensp;<code>str</code></dt>
+<dd>Time unit for the report
+</dd>
+<dt><strong><code>group_by</code></strong> :&ensp;<code>str</code></dt>
+<dd>Group results by a specific attribute</dd>
+<dt>metrics:list,</dt>
+<dt><strong><code>filter_field</code></strong></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>month Optional[str]: Month to retrieve if monthly periodicity is selected, in 'YYYY-MM' format</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_report(
+    self,
+    report_type_id:str,
+    date:str,
+    time_unit:str,
+    group_by:Union[str, list],
+    metrics:list,
+    filter_field:Optional[dict],
+    month:Optional[str]
+    )-&gt; None:
+    &#34;&#34;&#34;Retrieves one report by following all the necessary steps:
+        STEP 1 - POST report
+        STEP 2 - GET report status &amp; url
+        STEP 3 - GET download report
+    
+    Args:
+        report_type_id (str): Unique identifier for report type
+        date (str): Date for the report in &#39;YYYY-MM-DD&#39; format            
+        time_unit (str): Time unit for the report            
+        group_by (str): Group results by a specific attribute
+        metrics:list,
+        filter_field
+        month Optional[str]: Month to retrieve if monthly periodicity is selected, in &#39;YYYY-MM&#39; format
+
+    Returns:
+        None
+    &#34;&#34;&#34;
+    if month:
+        start_date, end_date = get_first_and_last_days_of_month(month)  #from utils.py
+        peridiocity = &#34;monthly&#34;
+    else:
+        start_date, end_date = date, date # it will be the same day
+        peridiocity = &#34;daily&#34;
+    
+    body = self.create_report_body(
+                    start_date=start_date,
+                    end_date=end_date,          
+                    group_by=group_by,
+                    metrics=metrics,
+                    report_type_id=report_type_id,
+                    time_unit=time_unit,
+                    filter_field=filter_field)
+    
+    self.fetch_access_tkn(method=&#39;refresh&#39;)
+
+    msg = self.create_msg(self.region, report_type_id, date, time_unit, group_by)     
+    
+    #### STEP 1 - GENERATING REPORT
+    report_id = await self.generate_report(data_payload=body,info_msg=msg)
+
+    #### STEP 2 - CHECKING REPORT STATUS
+    download_url = await self.check_report_status(report_id=report_id,info_msg=msg)
+
+    #### STEP 3 - DOWNLOADING REPORT FILE
+    # group_by can be a str, list
+    if isinstance(group_by, list):
+        group_by = &#34;_&#34;.join(group_by)        
+    
+    folder_path = os.path.join(
+                    os.getcwd(),
+                    &#39;reports&#39;,
+                    f&#39;{self.region}&#39;,
+                    f&#39;{report_type_id}&#39;,
+                    f&#39;{peridiocity}&#39;,
+                    f&#39;{time_unit}&#39;,
+                    f&#39;{group_by}&#39;,
+                    )
+    verify_and_create_directory(directory_path=folder_path)
+    #
+    file_name = f&#34;{start_date}_{end_date}_{report_type_id}&#34; 
+    full_path = os.path.join(folder_path,file_name)            
+    await self.download_compressed_file(url=download_url, path=full_path,info_msg=msg)
+    return</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.reports.Reports.generate_report"><code class="name flex">
+<span>async def <span class="ident">generate_report</span></span>(<span>self, data_payload: str, info_msg: str = '') -> Optional[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>STEP 1- Generates repost document in the Amazon Cloud</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data_payload</code></strong> :&ensp;<code>str</code></dt>
+<dd>json like string serving as payload in a request</dd>
+<dt><strong><code>info_msg</code></strong> :&ensp;<code>str</code></dt>
+<dd>message containing information about the reports,
+such as region, date, report type, etc.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>report_id (str): The report_id</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>Note</code></strong> :&ensp;<code>
+</code></dt>
+<dd>Equivalent cURL example:</dd>
+</dl>
+<pre><code>`curl --location --request POST 'https://advertising-api.amazon.com/reporting/reports'             --header 'Content-Type: application/vnd.createasyncreportrequest.v3+json'             --header 'Amazon-Advertising-API-ClientId: amzn1.application-oa2-client.xxxxxxxxxx'             --header 'Amazon-Advertising-API-Scope: xxxxxxxxxx'             --header 'Authorization: Bearer Atza|xxxxxx'             --data-raw '{`
+:   &quot;name&quot;:&quot;SP campaigns report 7/5-7/10&quot;,
+        &quot;startDate&quot;:&quot;2022-07-05&quot;,
+        &quot;endDate&quot;:&quot;2022-07-10&quot;,
+        &quot;configuration&quot;:{
+            &quot;adProduct&quot;:&quot;SPONSORED_PRODUCTS&quot;,
+            &quot;groupBy&quot;:[&quot;campaign&quot;,&quot;adGroup&quot;],
+            &quot;columns&quot;:[&quot;campaignId&quot;,&quot;adGroupId&quot;,&quot;impressions&quot;,&quot;clicks&quot;,&quot;cost&quot;,&quot;purchases1d&quot;,&quot;purchases7d&quot;,&quot;purchases14d&quot;,&quot;purchases30d&quot;,&quot;startDate&quot;,&quot;endDate&quot;],
+            &quot;reportTypeId&quot;:&quot;spCampaigns&quot;,
+            &quot;timeUnit&quot;:&quot;SUMMARY&quot;,
+            &quot;format&quot;:&quot;GZIP_JSON&quot;
+        }
+    }'
+
+
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def generate_report(self, data_payload:str, info_msg:str=&#34;&#34;)-&gt; Optional[str]:  
+    &#34;&#34;&#34;STEP 1- Generates repost document in the Amazon Cloud
+
+    Args:
+        data_payload (str): json like string serving as payload in a request
+        info_msg (str): message containing information about the reports, 
+            such as region, date, report type, etc.
+        
+    Returns:
+        report_id (str): The report_id
+
+    Note:        
+        Equivalent cURL example:
+    ```
+    curl --location --request POST &#39;https://advertising-api.amazon.com/reporting/reports&#39; \
+        --header &#39;Content-Type: application/vnd.createasyncreportrequest.v3+json&#39; \
+        --header &#39;Amazon-Advertising-API-ClientId: amzn1.application-oa2-client.xxxxxxxxxx&#39; \
+        --header &#39;Amazon-Advertising-API-Scope: xxxxxxxxxx&#39; \
+        --header &#39;Authorization: Bearer Atza|xxxxxx&#39; \
+        --data-raw &#39;{
+            &#34;name&#34;:&#34;SP campaigns report 7/5-7/10&#34;,
+            &#34;startDate&#34;:&#34;2022-07-05&#34;,
+            &#34;endDate&#34;:&#34;2022-07-10&#34;,
+            &#34;configuration&#34;:{
+                &#34;adProduct&#34;:&#34;SPONSORED_PRODUCTS&#34;,
+                &#34;groupBy&#34;:[&#34;campaign&#34;,&#34;adGroup&#34;],
+                &#34;columns&#34;:[&#34;campaignId&#34;,&#34;adGroupId&#34;,&#34;impressions&#34;,&#34;clicks&#34;,&#34;cost&#34;,&#34;purchases1d&#34;,&#34;purchases7d&#34;,&#34;purchases14d&#34;,&#34;purchases30d&#34;,&#34;startDate&#34;,&#34;endDate&#34;],
+                &#34;reportTypeId&#34;:&#34;spCampaigns&#34;,
+                &#34;timeUnit&#34;:&#34;SUMMARY&#34;,
+                &#34;format&#34;:&#34;GZIP_JSON&#34;
+            }
+        }&#39;       
+    ```
+    &#34;&#34;&#34;        
+    lst_headers  = [&#39;amz_ad_api_cli_id&#39;,&#39;authorize&#39;,
+                    &#39;amz_ad_api_scope&#39;,&#39;cont_rep_json_v3&#39;]
+    self.URL = urljoin(self.prefix_advt, &#39;/reporting/reports&#39;)
+    self.HEADERS = self._set_header_payload(
+                                list_of_keys=lst_headers, 
+                                kind=&#39;headers&#39;, 
+                                return_as=&#39;dict&#39;)
+           
+    self.DATA = data_payload
+    
+    
+    async with aiohttp.ClientSession() as session:
+        async with session.post(self.URL, headers=self.HEADERS, data=self.DATA) as response:
+            
+            self.resp_step1 = await response.json() # Debug.method
+            
+            if response.status == 200:                    
+                report_id = (await response.json()).get(&#39;reportId&#39;)
+                ###### Metadata.methods ############################                     
+                self.update_report_metadata_df(json=self.resp_step1)                      
+                self.save_report_df()
+                ####################################################  
+                print(f&#34;Step 1 concluded.{info_msg}&#34;)
+                return report_id
+            else:
+                ##### Metadata.methods ##################
+                self.update_report_metadata_df(
+                    json=self.resp_step1,
+                    error_url=self.URL,
+                    error_header=self.HEADERS,
+                    error_data=self.DATA,          
+                )
+                self.save_report_df()                    
+                #########################################
+                error_msg = f&#34;Expected response.status == 200.\nResponse:{self.resp_step1}&#34;
+                error_msg2= f&#34;\nurl:{self.URL}\nheaders:{self.HEADERS}\ndata:{self.DATA}&#34;
+                raise RuntimeError(error_msg+error_msg2)</code></pre>
+</details>
+</dd>
+<dt id="amz_ads_py.reports.Reports.retrieve_reports_async"><code class="name flex">
+<span>async def <span class="ident">retrieve_reports_async</span></span>(<span>self, report_type_id: str, start_date: str, end_date: str, time_unit: str, month: Optional[str], group_by: str) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retrieves reports according to date range or monthly periodicity.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>report_type_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>Unique identifier for report type</dd>
+<dt><strong><code>start_date</code></strong> :&ensp;<code>str</code></dt>
+<dd>Start date for the report in 'YYYY-MM-DD' format</dd>
+<dt><strong><code>end_date</code></strong> :&ensp;<code>str</code></dt>
+<dd>End date for the report in 'YYYY-MM-DD' format</dd>
+<dt><strong><code>time_unit</code></strong> :&ensp;<code>str</code></dt>
+<dd>Time unit for the report</dd>
+<dt>month Optional[str]: Month to retrieve if monthly periodicity is selected, in 'YYYY-MM' format</dt>
+<dt><strong><code>group_by</code></strong> :&ensp;<code>str</code></dt>
+<dd>Group results by a specific attribute</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def retrieve_reports_async(
+    self,
+    report_type_id:str,
+    start_date:str, 
+    end_date:str,
+    time_unit:str,
+    month:Optional[str],
+    group_by:str
+    )-&gt;None:
+    &#34;&#34;&#34;
+    Retrieves reports according to date range or monthly periodicity.
+    
+    Args:
+        report_type_id (str): Unique identifier for report type
+        start_date (str): Start date for the report in &#39;YYYY-MM-DD&#39; format
+        end_date (str): End date for the report in &#39;YYYY-MM-DD&#39; format
+        time_unit (str): Time unit for the report
+        month Optional[str]: Month to retrieve if monthly periodicity is selected, in &#39;YYYY-MM&#39; format
+        group_by (str): Group results by a specific attribute
+
+    Returns:
+        None        
+    &#34;&#34;&#34;        
+    # TODO: change this function to work with other reports
+    # Avaiable report_types:
+    # report_types = [&#39;spCampaigns&#39;,&#39;spTargeting&#39;]
+    try:
+        assert report_type_id in [&#39;spCampaigns&#39;,&#39;spTargeting&#39;]
+    except:
+        raise ValueError(f&#34;The report_type_id: {report_type_id} does not correspond to &#39;spCampaigns&#39; or &#39;spTargeting&#39;. Verify if there are any typos or different values.&#34; )
+    
+    
+    if report_type_id == &#39;spCampaigns&#39;:          
+        metrics = CAMPAING_METRICS.copy() + METRICS.copy()            
+        
+        if group_by == &#39;default&#39;:
+            group_by = [&#34;campaign&#34;,&#34;adGroup&#34;]
+            dict_filter = None               
+            metrics = metrics.copy()+CAMP_GROUP_CAMP.copy()+CAMP_GROUP_ADG.copy()
+            # it has to remove this, otherwise we have reponse error
+            metrics.remove(&#39;topOfSearchImpressionShare&#39;)
+        
+        else:
+            try:
+                assert group_by in [&#39;campaign&#39;,&#39;adGroup&#39;]
+            except:
+                raise ValueError(f&#34;Group by {grouper} is not supported by this {report_type_id}&#34;)
+                
+            if group_by == &#39;campaign&#39;:                    
+                filter_field = &#34;campaignStatus&#34;
+                metrics = metrics.copy() + CAMP_GROUP_CAMP.copy() # add metricsspecific to campaign
+                  
+            if group_by == &#39;adGroup&#39;:
+                filter_field = &#34;adStatus&#34;
+                metrics = metrics.copy() + CAMP_GROUP_ADG.copy() # add metricsspecific to adGroups
+        
+            filter_values = [&#34;ENABLED&#34;,&#34;PAUSED&#34;,&#34;ARCHIVED&#34;]
+            #        
+            dict_filter = self.create_filter(
+                                field=filter_field, 
+                                values=filter_values)
+        
+    if report_type_id == &#39;spTargeting&#39;:        
+        group_by = &#39;targeting&#39; #default
+        metrics = TARGETING_METRICS.copy() + METRICS.copy()
+        #
+        filter_field = &#34;keywordType&#34;
+        filter_values = [&#34;BROAD&#34;,&#34;PHRASE&#34;,&#34;EXACT&#34;]
+        #        
+        dict_filter = self.create_filter(
+                            field=filter_field, 
+                            values=filter_values)        
+    
+    # =====================X===========X========================#
+    tasks = []
+    async with aiohttp.ClientSession() as session:
+        
+        if month is not None:                
+            is_valid_month_string(month) #from utils.py
+            print(&#34;This will be a &#39;monthly report&#39;&#34;)
+            # the day does&#39;t matter,
+            # start_date &amp; end_date will be defined in the fetch_report method                
+            date = month + &#34;-01&#34;  
+            #
+            task = asyncio.create_task(
+                # my async function
+                #######################################                    
+                    self.fetch_report(
+                        report_type_id=report_type_id,
+                        date=date,
+                        time_unit=time_unit,
+                        group_by=group_by,
+                        metrics=metrics,
+                        filter_field=dict_filter,
+                        month=month
+                    ) # ends fetch_report
+                #######################################
+                ) # ends create_task
+            
+            tasks.append(task)      
+       
+        else:
+            # this will be a day-by-day report, according to date range 
+            for date in pd.date_range(start_date, end_date).astype(str):
+                         
+                task = asyncio.create_task(
+                # my async function
+                #######################################                    
+                    self.fetch_report(
+                        report_type_id=report_type_id,
+                        date=date,
+                        time_unit=time_unit,
+                        group_by=group_by,
+                        metrics=metrics,
+                        filter_field=dict_filter,
+                        month=month
+                    )
+                #######################################
+                )
+                tasks.append(task)
+
+        await asyncio.gather(*tasks)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="amz_ads_py.connect.Connect" href="connect.html#amz_ads_py.connect.Connect">Connect</a></b></code>:
+<ul class="hlist">
+<li><code><a title="amz_ads_py.connect.Connect.examine_resp" href="connect.html#amz_ads_py.connect.Connect.examine_resp">examine_resp</a></code></li>
+<li><code><a title="amz_ads_py.connect.Connect.fetch_access_tkn" href="connect.html#amz_ads_py.connect.Connect.fetch_access_tkn">fetch_access_tkn</a></code></li>
+<li><code><a title="amz_ads_py.connect.Connect.get_url_auth_code" href="connect.html#amz_ads_py.connect.Connect.get_url_auth_code">get_url_auth_code</a></code></li>
+</ul>
+</li>
+<li><code><b><a title="amz_ads_py.reports.Metadata" href="#amz_ads_py.reports.Metadata">Metadata</a></b></code>:
+<ul class="hlist">
+<li><code><a title="amz_ads_py.reports.Metadata.gen_report_metadata_df" href="#amz_ads_py.reports.Metadata.gen_report_metadata_df">gen_report_metadata_df</a></code></li>
+<li><code><a title="amz_ads_py.reports.Metadata.read_report_df" href="#amz_ads_py.reports.Metadata.read_report_df">read_report_df</a></code></li>
+<li><code><a title="amz_ads_py.reports.Metadata.save_report_df" href="#amz_ads_py.reports.Metadata.save_report_df">save_report_df</a></code></li>
+<li><code><a title="amz_ads_py.reports.Metadata.update_report_metadata_df" href="#amz_ads_py.reports.Metadata.update_report_metadata_df">update_report_metadata_df</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="amz_ads_py" href="index.html">amz_ads_py</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="amz_ads_py.reports.Debug" href="#amz_ads_py.reports.Debug">Debug</a></code></h4>
+<ul class="">
+<li><code><a title="amz_ads_py.reports.Debug.resp_step1" href="#amz_ads_py.reports.Debug.resp_step1">resp_step1</a></code></li>
+<li><code><a title="amz_ads_py.reports.Debug.resp_step2" href="#amz_ads_py.reports.Debug.resp_step2">resp_step2</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="amz_ads_py.reports.Metadata" href="#amz_ads_py.reports.Metadata">Metadata</a></code></h4>
+<ul class="">
+<li><code><a title="amz_ads_py.reports.Metadata.gen_report_metadata_df" href="#amz_ads_py.reports.Metadata.gen_report_metadata_df">gen_report_metadata_df</a></code></li>
+<li><code><a title="amz_ads_py.reports.Metadata.read_report_df" href="#amz_ads_py.reports.Metadata.read_report_df">read_report_df</a></code></li>
+<li><code><a title="amz_ads_py.reports.Metadata.save_report_df" href="#amz_ads_py.reports.Metadata.save_report_df">save_report_df</a></code></li>
+<li><code><a title="amz_ads_py.reports.Metadata.update_report_metadata_df" href="#amz_ads_py.reports.Metadata.update_report_metadata_df">update_report_metadata_df</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="amz_ads_py.reports.Reports" href="#amz_ads_py.reports.Reports">Reports</a></code></h4>
+<ul class="">
+<li><code><a title="amz_ads_py.reports.Reports.check_report_status" href="#amz_ads_py.reports.Reports.check_report_status">check_report_status</a></code></li>
+<li><code><a title="amz_ads_py.reports.Reports.create_filter" href="#amz_ads_py.reports.Reports.create_filter">create_filter</a></code></li>
+<li><code><a title="amz_ads_py.reports.Reports.create_msg" href="#amz_ads_py.reports.Reports.create_msg">create_msg</a></code></li>
+<li><code><a title="amz_ads_py.reports.Reports.create_report_body" href="#amz_ads_py.reports.Reports.create_report_body">create_report_body</a></code></li>
+<li><code><a title="amz_ads_py.reports.Reports.download_compressed_file" href="#amz_ads_py.reports.Reports.download_compressed_file">download_compressed_file</a></code></li>
+<li><code><a title="amz_ads_py.reports.Reports.fetch_report" href="#amz_ads_py.reports.Reports.fetch_report">fetch_report</a></code></li>
+<li><code><a title="amz_ads_py.reports.Reports.generate_report" href="#amz_ads_py.reports.Reports.generate_report">generate_report</a></code></li>
+<li><code><a title="amz_ads_py.reports.Reports.retrieve_reports_async" href="#amz_ads_py.reports.Reports.retrieve_reports_async">retrieve_reports_async</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
