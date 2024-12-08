@@ -1,6 +1,5 @@
 # misc
 _backup/
-amz_ads_py_doc/
 tests/
 html/
 reports/
@@ -8,6 +7,19 @@ metadata/
 test.ipynb
 test.py
 
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Credentials and sensitive data
+*.env
+*.key
+*credentials*
+*secret*
+*token*
+*config.json
+*settings.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -131,7 +143,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/

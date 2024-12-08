@@ -1,20 +1,19 @@
 #python 3.11.15
 import os
-# used in class Metadata
-import pandas as pd
-from datetime import datetime, UTC
+from datetime import datetime, UTC, timedelta
 #used in class ReportsAsync
 import json
 import aiohttp
 import asyncio
 import shutil
 import time
-from typing import Optional, Union
+from typing import Optional, Union, Dict, Any
 from urllib.parse import urljoin
 from tqdm import tqdm
 #
 from .root import Root
 from .connect import Connect
+from .db import ReportDatabase
 from .utils import (
         is_valid_month_string, 
         verify_and_create_directory, 
@@ -27,26 +26,6 @@ from .metrics import (
         TARGETING_METRICS, 
         METRICS
 )
-
-
-#used in metadata
-data_columns = [
-    'created_at',
-    'region',
-    'report_type',
-    'start_date',
-    'time_unit',
-    'report_id',
-    'expires_at',
-    'estim_exp_time',
-    'url',
-    'downloaded',
-    'discarded',
-    'error',
-    'error_url',
-    'error_header',    
-    'error_data',
-]
 
 
 class Debug(Root):
@@ -81,109 +60,16 @@ class Debug(Root):
 
     @resp_step2.deleter
     def resp_step2(self):
-        del self.self._resp_step2
+        del self._resp_step2
 
 
 ###################################################################################
-
-
-class Metadata(Root):
-    """Creates metadata info about reports as DataFrame stored in metadata/.
-    NOTE: The DataFrame generated may file contain sensitive data such as access_token, 
-    client_id, client_secret and other information.
-    """
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)        
-        self.meta_path = os.path.join(os.getcwd(),'metadata')
-        verify_and_create_directory(self.meta_path)
-
-        if not [f for f in os.listdir(self.meta_path) if f.endswith('.pkl')]:
-            self.report_df = pd.DataFrame([],dtype=float, columns=data_columns)
-        else:
-            self.read_report_df()
-
-
-    def read_report_df(self):
-        """reads the last pkl file in the metadata directory"""        
-        last_file = [f for f in os.listdir(self.meta_path) if f.endswith('.pkl')][-1]
-        self.report_df = pd.read_pickle(os.path.join(self.meta_path,last_file))
-        return
-
-
-    def save_report_df(self):
-        """saves at /metadata/"""
-        filename = f"{datetime.now(UTC).strftime("%Y-%m-%d")}.pkl"        
-        self.report_df.to_pickle(os.path.join(self.meta_path,filename))
-        return
-
-    
-    def gen_report_metadata_df(self, json:dict):
-        """Creates a dataframe with metadata from requests on reports.
-        Useful if in step2 the functions run out of retries, the 
-        report_id can still work and retry the function later.        
-        """
-        data = pd.DataFrame({},dtype=float, columns=data_columns)
-        data['created_at'] = [json.get('createdAt')]
-        data['region'] = [self.region]
-        data['report_type'] = [json.get('configuration').get('reportTypeId')]
-        data['start_date'] = [json.get('startDate')]
-        data['time_unit'] = [json.get('configuration').get('timeUnit')]
-        data['report_id'] = [json.get('reportId')]
-        data['expires_at'] = [None]
-        data['estim_exp_time'] = [pd.Timestamp(json.get('createdAt'),tz='UTC')+ pd.Timedelta(minutes=100)]
-        data['url'] = [None]
-        data['downloaded'] = [0]
-        data['discarded'] = [0]
-        data['error'] = [None]
-        data['error_url'] = [None]
-        data['error_header'] = [None]
-        data['error_data'] = [None]
-
-        if not self.report_df.empty:
-            self.report_df = pd.concat([self.report_df,data])
-        else:
-            self.report_df = data.copy()
-        self.report_df.reset_index(drop=True,inplace=True)
-        #return self.report_df
-        return
-
-
-    def update_report_metadata_df(
-        self, 
-        json:Optional[dict]=None, 
-        url:Optional[str]=None, 
-        error_url=None,
-        error_header=None,
-        error_data=None
-        ):
-        """Updates dataframe with metadata from requests on reports.              
-        """
-        if json:
-            _id = json.get('reportId')
-
-            if error_url and error_header and error_data:
-                self.report_df.loc[self.report_df.report_id==_id,'error'] = json
-                self.report_df.loc[self.report_df.report_id==_id,'error_url'] = error_url
-                self.report_df.loc[self.report_df.report_id==_id,'error_header'] = error_header
-                self.report_df.loc[self.report_df.report_id==_id,'error_data'] = error_data
-            else:
-                self.report_df.loc[self.report_df.report_id==_id,'url'] = json.get('url')
-                self.report_df.loc[self.report_df.report_id==_id,'expires_at'] = json.get('urlExpiresAt')
-                
-        if url:
-            self.report_df.loc[self.report_df.url==url,'downloaded'] = 1
-        return
-
-
-###################################################################################
-
-
 class Reports(Connect, Debug, Metadata):
     """Generates data & routines to create/wait/download reports 
     using Amazon REST API & custom code"""
-    def __init__(self, region,**kwargs):
+    def __init__(self, region, **kwargs):
         super().__init__(region=region, **kwargs)
-        
+        self.db = ReportDatabase()
 
     def create_msg(
         self, 
@@ -302,13 +188,12 @@ class Reports(Connect, Debug, Metadata):
         return json.dumps(raw_data)
     
         
-    async def generate_report(self, data_payload:str, info_msg:str="")-> Optional[str]:  
+    async def generate_report(self, data_payload: str, info_msg: str = "") -> Optional[str]:  
         """STEP 1- Generates repost document in the Amazon Cloud
 
         Args:
             data_payload (str): json like string serving as payload in a request
-            info_msg (str): message containing information about the reports, 
-                such as region, date, report type, etc.
+            info_msg (str): message containing information about the reports, such as region, date, report type, etc.
             
         Returns:
             report_id (str): The report_id
@@ -346,43 +231,59 @@ class Reports(Connect, Debug, Metadata):
                
         self.DATA = data_payload
         
-        
         async with aiohttp.ClientSession() as session:
             async with session.post(self.URL, headers=self.HEADERS, data=self.DATA) as response:
-                
-                self.resp_step1 = await response.json() # Debug.method
+                self.resp_step1 = await response.json()  # Debug.method
                 
                 if response.status == 200:                    
-                    report_id = (await response.json()).get('reportId')
-                    ###### Metadata.methods ############################                     
-                    self.update_report_metadata_df(json=self.resp_step1)                      
-                    self.save_report_df()
-                    ####################################################  
+                    report_data = await response.json()
+                    report_id = report_data.get('reportId')
+                    
+                    # Store report information in database with API response data
+                    payload = json.loads(data_payload)
+                    await self.db.add_report({
+                        'report_id': report_id,
+                        'profile_id': self.profile_id,
+                        'record_type': payload.get('configuration', {}).get('recordType'),
+                        'report_name': payload.get('name'),
+                        'start_date': payload.get('startDate'),
+                        'end_date': payload.get('endDate'),
+                        'time_unit': payload.get('configuration', {}).get('timeUnit'),
+                        'format': payload.get('configuration', {}).get('format', 'GZIP_JSON'),
+                        'status': 'PENDING',
+                        'created_time': datetime.now(UTC).isoformat(),
+                        'last_updated_time': datetime.now(UTC).isoformat(),
+                        'configuration': payload.get('configuration'),
+                        'metrics': payload.get('configuration', {}).get('columns'),
+                        'filters': payload.get('configuration', {}).get('filters'),
+                        'request_time': datetime.now(UTC).isoformat(),
+                        'api_request_id': response.headers.get('x-amz-requestid'),
+                        'api_timestamp': response.headers.get('x-amz-date'),
+                        'api_status_code': response.status
+                    })
+                    
                     print(f"Step 1 concluded.{info_msg}")
                     return report_id
                 else:
-                    ##### Metadata.methods ##################
-                    self.update_report_metadata_df(
-                        json=self.resp_step1,
-                        error_url=self.URL,
-                        error_header=self.HEADERS,
-                        error_data=self.DATA,          
-                    )
-                    self.save_report_df()                    
-                    #########################################
                     error_msg = f"Expected response.status == 200.\nResponse:{self.resp_step1}"
                     error_msg2= f"\nurl:{self.URL}\nheaders:{self.HEADERS}\ndata:{self.DATA}"
+                    await self.db.add_report({
+                        'status': 'FAILED',
+                        'error_message': error_msg + error_msg2,
+                        'api_status_code': response.status,
+                        'api_request_id': response.headers.get('x-amz-requestid'),
+                        'api_timestamp': response.headers.get('x-amz-date')
+                    })
                     raise RuntimeError(error_msg+error_msg2)
-            
 
     async def check_report_status(
-        self, 
-        report_id: str, 
-        retries: int = 25, 
-        backoff_factor: float = 1,
-        limit_wait: int = 32,
-        info_msg: str=""
-        ) -> Optional[str]:
+            self,
+            report_id: str,
+            retries: int = 25,
+            backoff_factor: float = 1,
+            limit_wait: int = 32,
+            info_msg: str = ""
+    ) -> Optional[str]:
         """
         STEP 2- Check the status of a report and retrieve its download URL if it's completed.
     
@@ -391,93 +292,115 @@ class Reports(Connect, Debug, Metadata):
             retries (int): The number of retries to attempt before giving up.
             backoff_factor (float): The factor to use for exponential backoff between retries.
             limit_wait (int): max number of sec. tolerated to asyncio.wait inside the function
-            info_msg (str): message containing information about the reports, such as region, 
-            date, report type, etc.
+            info_msg (str): message containing information about the reports
     
         Returns:
             download_url (str): The download URL for the completed report
         """
-        lst_headers = ['amz_ad_api_cli_id', 'authorize', 
-                       'amz_ad_api_scope', 'cont_rep_json_v3']
-        self.URL = urljoin(self.prefix_advt, f'/reporting/reports/{report_id}')
-        self.HEADERS = self._set_header_payload(
-                                    list_of_keys=lst_headers, 
-                                    kind='headers', 
-                                    return_as='dict')
-
-
-        async with aiohttp.ClientSession() as session:
+        for attempt in range(retries):
+            lst_headers = ['amz_ad_api_cli_id', 'authorize', 
+                           'amz_ad_api_scope', 'cont_rep_json_v3']
+            self.URL = urljoin(self.prefix_advt, f'/reporting/reports/{report_id}')
+            self.HEADERS = self._set_header_payload(
+                                        list_of_keys=lst_headers, 
+                                        kind='headers', 
+                                        return_as='dict')
             
-            for attempt in range(1, retries + 1):
-                
+            async with aiohttp.ClientSession() as session:
                 async with session.get(self.URL, headers=self.HEADERS) as response:
                     self.resp_step2 = await response.json() # Debug.method
                     
                     if response.status == 200:
-                        report_status = (await response.json()).get('status')
-                        if report_status == 'COMPLETED':
-                            download_url = (await response.json()).get('url')
-                            ###### Metadata.methods ############################                     
-                            self.update_report_metadata_df(json=self.resp_step2)                      
-                            self.save_report_df()
-                            ####################################################                      
+                        report_data = await response.json()
+                        status = report_data.get('status')
+                        
+                        # Update database with latest status
+                        await self.db.update_report_status(
+                            report_id=report_id,
+                            status=status,
+                            response_data={
+                                'status': status,
+                                'status_details': report_data.get('statusDetails'),
+                                'last_updated_time': datetime.now(UTC).isoformat(),
+                                'url': report_data.get('url'),
+                                'file_size_bytes': report_data.get('fileSize'),
+                                'api_request_id': response.headers.get('x-amz-requestid'),
+                                'api_timestamp': response.headers.get('x-amz-date'),
+                                'api_status_code': response.status
+                            }
+                        )
+                        
+                        if status == 'COMPLETED':
+                            download_url = report_data.get('url')
                             print(f"Step 2 concluded.{info_msg}")
                             return download_url
-                    else:
-                        ##### Metadata.methods ##################
-                        self.update_report_metadata_df(
-                            json=self.resp_step2,
-                            error_url=self.URL,
-                            error_header=self.HEADERS,
-                            error_data=self.DATA,          
-                        )
-                        self.save_report_df()
-                        #########################################
-                        error_msg = f"Expected response.status == 200.\nResponse:{self.resp_step2}"
-                        raise RuntimeError(error_msg)
-    
-                # Backoff logic
-                backoff_time = min(backoff_factor * (2 ** attempt), limit_wait)
-                screen_msg = f"Attempt#:{attempt}.Waiting {backoff_time}s.{info_msg}"
-                for _ in tqdm(range(backoff_time), desc=screen_msg):
-                    await asyncio.sleep(1)
+                        elif status in ['FAILED', 'CANCELLED']:
+                            error_message = report_data.get('statusDetails', 'Report generation failed')
+                            raise Exception(f"Report generation failed: {error_message}")
+                    
+                    # Backoff logic
+                    wait_time = min(backoff_factor * (2 ** attempt), limit_wait)
+                    for _ in tqdm(range(wait_time), desc=f"Attempt#{attempt}. Waiting {wait_time}s.{info_msg}"):
+                        await asyncio.sleep(1)
+        
+        error_message = f"Report generation timed out after {retries} attempts"
+        await self.db.update_report_status(
+            report_id=report_id,
+            status='FAILED',
+            error_message=error_message
+        )
+        raise Exception(error_message)
 
-            raise Exception(f"Request failed after {retries} retries.{info_msg}")
-
-    
     async def download_compressed_file(
-        self, 
-        url:str, 
-        path:Union[str, os.PathLike], 
-        info_msg:str=""
-        ) -> None:
-        """STEP 3 - Downloads file as gzip.
-
-        Args:
-            url (str): string representing the url
-            path (str): string representing the file path to be saved
-            info_msg (str): message containing information about the reports, such as region, 
-                date, report type, etc.
-    
-        Returns:
-            None
-        """
-        async with aiohttp.ClientSession() as session:
+            self,
+            url: str,
+            path: Union[str, os.PathLike],
+            info_msg: str = "",
+            report_id: Optional[str] = None
+    ) -> None:
+        try:
+            lst_headers = ['amz_ad_api_cli_id', 'authorize', 
+                           'amz_ad_api_scope', 'cont_rep_json_v3']
+            self.URL = url
+            self.HEADERS = self._set_header_payload(
+                                        list_of_keys=lst_headers, 
+                                        kind='headers', 
+                                        return_as='dict')
             
-            async with session.get(url) as response:
-                local_filename = path + ".gz"
-                with open(local_filename, 'wb') as f:
-                    while True:
-                        chunk = await response.content.read(1024)
-                        if not chunk:
-                            break
-                        f.write(chunk)
-        #updated metadata
-        self.update_report_metadata_df(url=url)        
-        self.save_report_df()
-        print(f"Step 3 concluded.{info_msg} Downloaded {local_filename}")
-        return    
-
+            async with aiohttp.ClientSession() as session:
+                async with session.get(self.URL, headers=self.HEADERS) as response:
+                    response.raise_for_status()
+                    
+                    local_filename = path + ".gz"
+                    with open(local_filename, 'wb') as f:
+                        while True:
+                            chunk = await response.content.read(1024)
+                            if not chunk:
+                                break
+                            f.write(chunk)
+                    
+                    if report_id:
+                        await self.db.update_report_status(
+                            report_id=report_id,
+                            status='DOWNLOADED',
+                            response_data={
+                                'location': local_filename,
+                                'download_time': datetime.now(UTC).isoformat(),
+                                'api_request_id': response.headers.get('x-amz-requestid'),
+                                'api_timestamp': response.headers.get('x-amz-date'),
+                                'api_status_code': response.status
+                            }
+                        )
+                    
+                    print(f"Step 3 concluded.{info_msg} Downloaded {local_filename}")
+        except Exception as e:
+            if report_id:
+                await self.db.update_report_status(
+                    report_id=report_id,
+                    status='FAILED',
+                    error_message=f"Download failed: {str(e)}"
+                )
+            raise
 
     async def fetch_report(
         self,
@@ -550,7 +473,7 @@ class Reports(Connect, Debug, Metadata):
         #
         file_name = f"{start_date}_{end_date}_{report_type_id}" 
         full_path = os.path.join(folder_path,file_name)            
-        await self.download_compressed_file(url=download_url, path=full_path,info_msg=msg)
+        await self.download_compressed_file(url=download_url, path=full_path,info_msg=msg, report_id=report_id)
         return
 
     
